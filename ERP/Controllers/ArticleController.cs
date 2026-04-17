@@ -1,0 +1,64 @@
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Service_ERP.DTO;
+using Service_ERP.IService;
+
+namespace ERP.Controllers
+{
+    [ApiController]
+    [Route("[controller]")]
+
+    public class ArticleController : ControllerBase
+    {
+        private readonly IArticleService _service;
+
+        public ArticleController(IArticleService service)
+        {
+            _service = service;
+        }
+
+        // GET /Article
+        [HttpGet]
+        public async Task<IActionResult> GetAll()
+        {
+            var result = await _service.GetAllAsync();
+            return Ok(result);
+        }
+
+        // GET /Article/{id}
+        [HttpGet("{id:int}")]
+        public async Task<IActionResult> GetById(int id)
+        {
+            var result = await _service.GetByIdAsync(id);
+            if (result == null) return NotFound();
+            return Ok(result);
+        }
+
+        // POST /Article
+        [HttpPost]
+        public async Task<IActionResult> Create([FromBody] ArticleDto dto)
+        {
+            if (!ModelState.IsValid) return BadRequest(ModelState);
+            var created = await _service.AddAsync(dto);
+            return CreatedAtAction(nameof(GetById), new { id = created.IdArt }, created);
+        }
+
+        // PUT /Article/{id}
+        [HttpPut("{id:int}")]
+        public async Task<IActionResult> Update(int id, [FromBody] ArticleDto dto)
+        {
+            if (!ModelState.IsValid) return BadRequest(ModelState);
+            if (id != dto.IdArt) return BadRequest("L'identifiant ne correspond pas.");
+            await _service.UpdateAsync(dto);
+            return NoContent();
+        }
+
+        // DELETE /Article/{id}
+        [HttpDelete("{id:int}")]
+        public async Task<IActionResult> Delete(int id)
+        {
+            await _service.DeleteAsync(id);
+            return NoContent();
+        }
+    }
+}
