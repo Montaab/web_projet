@@ -20,7 +20,7 @@ public partial class CommandeDto
 
     public virtual ICollection<FactureDto> Factures { get; set; } = new List<FactureDto>();
 
-    public virtual ClientDto IdCltNavigation { get; set; }
+    public virtual ClientDto? IdCltNavigation { get; set; }
 
     public virtual ICollection<LCommandeDto> LCommandes { get; set; } = new List<LCommandeDto>();
     

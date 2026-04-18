@@ -11,10 +11,6 @@
         "Action": "Start"
       },
       {
-        "Path": "Gateway\\Gateway.csproj",
-        "Action": "Start"
-      },
-      {
         "Path": "ERP\\ERP.csproj",
         "Action": "Start"
       }

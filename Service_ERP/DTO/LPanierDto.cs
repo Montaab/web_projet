@@ -14,8 +14,8 @@ public partial class LPanierDto
 
     public DateTime? DateAjout { get; set; }
 
-    public virtual Article IdArtNavigation { get; set; }
+    public virtual Article? IdArtNavigation { get; set; }
 
-    public virtual PanierDto IdPanNavigation { get; set; }
+    public virtual PanierDto? IdPanNavigation { get; set; }
     
 }

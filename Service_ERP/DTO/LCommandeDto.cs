@@ -16,8 +16,8 @@ public partial class LCommandeDto
 
     public decimal? Remise { get; set; }
 
-    public virtual Article IdArtNavigation { get; set; }
+    public virtual Article? IdArtNavigation { get; set; }
 
-    public virtual CommandeDto IdComNavigation { get; set; }
+    public virtual CommandeDto? IdComNavigation { get; set; }
     
 }
