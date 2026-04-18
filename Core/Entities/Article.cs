@@ -21,7 +21,7 @@ public partial class Article
 
     public int? IdScat { get; set; }
 
-    public virtual Souscategorie IdScatNavigation { get; set; }
+    public virtual Souscategorie? IdScatNavigation { get; set; }
 
     public virtual ICollection<LCommande> LCommandes { get; set; } = new List<LCommande>();
 

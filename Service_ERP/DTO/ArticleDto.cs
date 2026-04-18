@@ -20,7 +20,7 @@ public partial class ArticleDto
 
     public int? IdScat { get; set; }
 
-    public virtual SouscategorieDto IdScatNavigation { get; set; }
+    public virtual SouscategorieDto? IdScatNavigation { get; set; }
 
     public virtual ICollection<LCommandeDto> LCommandes { get; set; } = new List<LCommandeDto>();
 
