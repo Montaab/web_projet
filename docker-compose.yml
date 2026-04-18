@@ -2,7 +2,7 @@ version: '3.9'
 
 services:
   postgres:
-    image: postgres:15
+    image: postgres:18
     container_name: postgresdb
     restart: always
     environment:
@@ -43,7 +43,7 @@ services:
     restart: always
     environment:
       ASPNETCORE_ENVIRONMENT: Development
-      ConnectionStrings__DefaultConnection: Host=postgresdb;Port=5432;Database=IAM;Username=postgres;Password=data2010.
+      ConnectionStrings__DefaultConnection: Host=postgresdb;Port=5432;Database=IAM;Username=postgres;Password=0000
       Services__AuthService: http://authservice:8080
       Jwt__Issuer: authapi
       Jwt__Audience: AllMicroservices
