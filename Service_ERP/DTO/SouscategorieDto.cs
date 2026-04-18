@@ -20,6 +20,6 @@ public partial class SouscategorieDto
 
     public virtual ICollection<Article> Articles { get; set; } = new List<Article>();
 
-    public virtual CategorieDto IdCatNavigation { get; set; }
+    public virtual CategorieDto? IdCatNavigation { get; set; }
     
 }

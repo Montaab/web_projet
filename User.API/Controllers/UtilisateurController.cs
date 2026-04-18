@@ -40,7 +40,7 @@ namespace User.API.Controllers
             try
             {
                 var usr = await _service.Islogin(login).ConfigureAwait(false);
-                if (!String.IsNullOrEmpty(usr?.AccessToken)) 
+                if (!String.IsNullOrEmpty(usr?.AccessToken))
                 {
                     return new OkObjectResult(usr);
                 }
@@ -49,7 +49,7 @@ namespace User.API.Controllers
                     dict.Add("Message", "Echec de connection");
                     return NotFound(dict);
                 }
-                
+
             }
             catch (Exception ex)
             {
@@ -82,9 +82,9 @@ namespace User.API.Controllers
                 else
                 {
                     dict.Add("Message", "Echec d'Insertion");
-                    return NotFound (dict);
+                    return NotFound(dict);
                 }
-                    
+
             }
             catch (Exception ex)
             {
@@ -101,7 +101,7 @@ namespace User.API.Controllers
         /// </summary>
         /// <param name="usr"></param>
         /// <returns></returns>
-        
+
         [Route("UpdUser")]
         [HttpPut]
         public async Task<ActionResult> Modif(UtilisateurDto usr)
@@ -148,7 +148,7 @@ namespace User.API.Controllers
             try
             {
                 var usrs = _service.GetAll();
-                if(usrs.Count() != 0)
+                if (usrs.Count() != 0)
                 {
                     return new OkObjectResult(usrs);
                 }

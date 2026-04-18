@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Service.DTO;
 using Service.IService;
-using Service.Models;
 
 namespace Auth.API.Controllers
 {
@@ -14,27 +13,10 @@ namespace Auth.API.Controllers
     public class AuthController : ControllerBase
     {
         private readonly IAuthService _authService;
-        private readonly IUtilisateurService _userService;
 
-        public AuthController(IAuthService authService, IUtilisateurService userService)
+        public AuthController(IAuthService authService)
         {
             _authService = authService;
-            _userService = userService;
-        }
-
-        /// <summary>
-        /// Login endpoint
-        /// </summary>
-        /// <param name="login"></param>
-        /// <returns></returns>
-        [HttpPost("Login")]
-        public async Task<IActionResult> Login([FromBody] Login login)
-        {
-            var result = await _userService.Islogin(login);
-            if (result == null)
-                return Unauthorized("Invalid credentials");
-
-            return Ok(result);
         }
 
         /// <summary>
