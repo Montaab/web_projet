@@ -1,0 +1,98 @@
+<div class="page-header">
+  <div>
+    <h2>Tableau de bord</h2>
+    <p>Aperçu global de votre activité ERP</p>
+  </div>
+  <div class="quick-actions">
+    <button class="btn btn-primary" [routerLink]="['/articles']" [queryParams]="{action: 'add'}">
+      <span>📦</span> Nouvel Article
+    </button>
+    <button class="btn btn-success" [routerLink]="['/clients']" [queryParams]="{action: 'add'}">
+      <span>👤</span> Nouveau Client
+    </button>
+    <button class="btn btn-accent" [routerLink]="['/commandes']">
+      <span>📋</span> Nouvelle Commande
+    </button>
+  </div>
+</div>
+
+@if (loading) {
+  <div class="loading-state">
+    <span class="spinner"></span>
+    Chargement des données...
+  </div>
+} @else {
+  <div class="stats-grid animate-in">
+    <div class="stat-card">
+      <div class="stat-icon icon-blue">📦</div>
+      <div class="stat-info">
+        <h3>Articles</h3>
+        <p class="stat-value">{{ stats.articles }}</p>
+      </div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon icon-green">👥</div>
+      <div class="stat-info">
+        <h3>Clients</h3>
+        <p class="stat-value">{{ stats.clients }}</p>
+      </div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon icon-purple">📋</div>
+      <div class="stat-info">
+        <h3>Commandes</h3>
+        <p class="stat-value">{{ stats.commandes }}</p>
+      </div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon icon-yellow">🏭</div>
+      <div class="stat-info">
+        <h3>Fournisseurs</h3>
+        <p class="stat-value">{{ stats.fournisseurs }}</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="dashboard-content animate-in" style="animation-delay: 0.1s">
+    <div class="card recent-activity">
+      <div class="card-header">
+        <h3>Commandes récentes</h3>
+        <button class="btn btn-ghost btn-sm">Voir tout</button>
+      </div>
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Date</th>
+              <th>Statut</th>
+              <th>Total</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (cmd of recentCommandes; track cmd.idCom) {
+              <tr>
+                <td>#{{ cmd.idCom }}</td>
+                <td>{{ (cmd.dateCom | date:'dd/MM/yyyy') || 'N/A' }}</td>
+                <td>
+                  <span class="badge" [ngClass]="{
+                    'badge-success': cmd.statut === 'Payé' || cmd.statut === 'Validé',
+                    'badge-warning': cmd.statut === 'En attente',
+                    'badge-danger': cmd.statut === 'Annulé'
+                  }">{{ cmd.statut }}</span>
+                </td>
+                <td>{{ (cmd.total | currency:'EUR') || '0.00 €' }}</td>
+              </tr>
+            } @empty {
+              <tr>
+                <td colspan="4" style="text-align: center; color: var(--text-secondary)">
+                  Aucune commande récente.
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+}

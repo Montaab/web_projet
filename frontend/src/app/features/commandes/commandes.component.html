@@ -1,0 +1,189 @@
+<div class="page-header">
+  <div>
+    <h2>Commandes</h2>
+    <p>Suivez et gérez les commandes clients</p>
+  </div>
+  <button class="btn btn-primary" (click)="openAdd()">
+    <span><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-plus"><path d="M5 12h14"/><path d="M12 5v14"/></svg></span> Nouvelle commande
+  </button>
+</div>
+
+@if (loading) {
+  <div class="card" style="text-align: center; padding: 40px;">
+    <span class="spinner"></span> Chargement...
+  </div>
+} @else {
+  <div class="card table-wrapper animate-in">
+    <table>
+      <thead>
+        <tr>
+          <th>Réf.</th>
+          <th>Client</th>
+          <th>Date</th>
+          <th>Statut</th>
+          <th style="text-align: right;">Total</th>
+          <th style="text-align: right;">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (com of commandes; track com.idCom) {
+          <tr>
+            <td style="font-weight: 600;">#{{ com.idCom }}</td>
+            <td>{{ getClientName(com.idClt) }}</td>
+            <td>{{ com.dateCom | date:'dd/MM/yyyy' }}</td>
+            <td>
+              <span class="badge" [ngClass]="getStatusClass(com.statut)">
+                {{ com.statut }}
+              </span>
+            </td>
+            <td style="text-align: right; font-weight: 600;">
+              {{ com.total | number:'1.2-2' }} €
+            </td>
+            <td style="text-align: right;">
+              <div class="actions">
+                <button class="btn-icon" (click)="openEdit(com)"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-pencil"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/><path d="m15 5 4 4"/></svg></button>
+                <button class="btn-icon text-danger" (click)="deleteCom(com.idCom)"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-trash-2"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/><line x1="10" x2="10" y1="11" y2="17"/><line x1="14" x2="14" y1="11" y2="17"/></svg></button>
+              </div>
+            </td>
+          </tr>
+        } @empty {
+          <tr>
+            <td colspan="6" style="text-align: center; padding: 60px; color: var(--text-secondary);">
+              <div style="font-size: 40px; margin-bottom: 16px;"><svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-package"><path d="M11 21.73a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73z"/><path d="M12 22V12"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="m7.5 4.5 7.5 4.4"/></svg></div>
+              <p>Aucune commande trouvée.</p>
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+}
+
+@if (showModal) {
+  <div class="modal-overlay">
+    <div class="modal-box" style="max-width: 800px;"> <!-- Élargi pour les articles -->
+      <div class="modal-header">
+        <h3>{{ editMode ? 'Modifier' : 'Créer' }} une commande</h3>
+        <button class="modal-close" (click)="showModal = false">×</button>
+      </div>
+      
+      <div class="modal-grid">
+        <div class="form-group">
+          <label>Client</label>
+          <select class="form-control" [(ngModel)]="currentCom.idClt">
+            <option [value]="0" disabled>Sélectionnez un client</option>
+            @for (clt of clients; track clt.idClt) {
+              <option [value]="clt.idClt">{{ clt.nom }} {{ clt.prenom }}</option>
+            }
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Date</label>
+          <input type="date" class="form-control" [(ngModel)]="currentCom.dateCom">
+        </div>
+        <div class="form-group">
+          <label>Statut</label>
+          <select class="form-control" [(ngModel)]="currentCom.statut">
+            <option value="En attente">En attente</option>
+            <option value="En cours">En cours</option>
+            <option value="Livree">Livrée</option>
+            <option value="Annulee">Annulée</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Paiement</label>
+          <select class="form-control" [(ngModel)]="currentCom.modePaiement">
+            <option value="Especes">Espèces</option>
+            <option value="Carte bancaire">Carte bancaire</option>
+            <option value="Virement bancaire">Virement bancaire</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Section Articles -->
+      <div class="lines-section" style="margin-top: 24px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+          <h4 style="font-size: 15px; font-weight: 600;">Articles commandés</h4>
+          <button class="btn btn-ghost btn-sm" (click)="addLine()">+ Ajouter un article</button>
+        </div>
+        
+        <div class="table-wrapper" style="max-height: 250px; overflow-y: auto;">
+          <table class="lines-table">
+            <thead>
+              <tr>
+                <th>Article</th>
+                <th style="width: 100px;">Quantité</th>
+                <th style="width: 120px;">Prix Unitaire</th>
+                <th style="width: 100px;">Remise</th>
+                <th style="text-align: right; width: 100px;">S.Total</th>
+                <th style="width: 40px;"></th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (line of currentCom.lCommandes; track $index) {
+                <tr>
+                  <td>
+                    <select class="form-control form-control-sm" [(ngModel)]="line.idArt" (change)="onArticleChange(line)">
+                      @for (art of articles; track art.idArt) {
+                        <option [value]="art.idArt">{{ art.designation }}</option>
+                      }
+                    </select>
+                  </td>
+                  <td>
+                    <input type="number" class="form-control form-control-sm" [(ngModel)]="line.quantite" (change)="calculateTotal()" min="1">
+                  </td>
+                  <td>
+                    <input type="number" class="form-control form-control-sm" [(ngModel)]="line.prixAchat" (change)="calculateTotal()">
+                  </td>
+                  <td>
+                    <input type="number" class="form-control form-control-sm" [(ngModel)]="line.remise" (change)="calculateTotal()">
+                  </td>
+                  <td style="text-align: right; font-weight: 600;">
+                    {{ (line.prixAchat * line.quantite - (line.remise || 0)) | number:'1.2-2' }} €
+                  </td>
+                  <td>
+                    <button class="text-danger" style="background:none; border:none; cursor:pointer;" (click)="removeLine($index)">×</button>
+                  </td>
+                </tr>
+              } @empty {
+                <tr>
+                  <td colspan="6" style="text-align: center; padding: 20px; color: var(--text-secondary);">
+                    Aucun article ajouté.
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="modal-footer" style="align-items: center; justify-content: space-between;">
+        <div style="font-size: 18px; font-weight: 700;">
+          Total: <span style="color: var(--accent-light);">{{ currentCom.total | number:'1.2-2' }} €</span>
+        </div>
+        <div style="display: flex; gap: 10px;">
+          <button class="btn btn-ghost" (click)="showModal = false">Annuler</button>
+          <button class="btn btn-primary" (click)="save()">Confirmer la commande</button>
+        </div>
+      </div>
+    </div>
+  </div>
+}
+
+@if (showDeleteModal) {
+  <div class="modal-overlay">
+    <div class="modal-box" style="max-width: 400px; text-align: center;">
+      <div style="color: var(--danger); margin-bottom: 20px;">
+        <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-trash-2"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/><line x1="10" x2="10" y1="11" y2="17"/><line x1="14" x2="14" y1="11" y2="17"/></svg>
+      </div>
+      <h3 style="margin-bottom: 12px;">Confirmer la suppression</h3>
+      <p style="color: var(--text-secondary); margin-bottom: 32px;">
+        Êtes-vous sûr de vouloir supprimer cette commande ? Cette action est irréversible.
+      </p>
+      <div style="display: flex; gap: 12px;">
+        <button class="btn btn-ghost" (click)="showDeleteModal = false" style="flex: 1;">Annuler</button>
+        <button class="btn btn-danger" (click)="confirmDelete()" style="flex: 1;">Supprimer</button>
+      </div>
+    </div>
+  </div>
+}
