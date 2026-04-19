@@ -16,7 +16,13 @@ public partial class FactureDto
 
     public int? IdCom { get; set; }
 
-    public virtual CommandeDto IdComNavigation { get; set; }
+    public virtual CommandeDto? IdComNavigation { get; set; }
+    public void Mapping(AutoMapper.Profile profile)
+    {
+        profile.CreateMap<Facture, FactureDto>().ReverseMap();
+        profile.CreateMap<Commande, CommandeDto>().ReverseMap();
 
-    
+
+    }
+
 }

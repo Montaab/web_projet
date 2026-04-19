@@ -1,4 +1,7 @@
 using Core.Entities;
+
+using AutoMapper;
+using Core.Entities;
 ﻿using System;
 using System.Collections.Generic;
 
@@ -18,8 +21,14 @@ public partial class SouscategorieDto
 
     public DateTime? DateCreation { get; set; }
 
-    public virtual ICollection<Article> Articles { get; set; } = new List<Article>();
+    public virtual ICollection<ArticleDto> Articles { get; set; } = new List<ArticleDto>();
 
     public virtual CategorieDto? IdCatNavigation { get; set; }
-    
+
+    public void Mapping(AutoMapper.Profile profile)
+    {
+        profile.CreateMap<Souscategorie, SouscategorieDto>().ReverseMap();
+        profile.CreateMap<CategorieDto, CategorieDto>().ReverseMap();
+
+    }
 }

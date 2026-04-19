@@ -6,6 +6,7 @@ using Core.Entities;
 using DAL.IRepository;
 using Service_ERP.DTO;
 using Service_ERP.IService;
+using Microsoft.EntityFrameworkCore;
 
 namespace Service_ERP.Service
 {
@@ -22,13 +23,18 @@ namespace Service_ERP.Service
 
         public async Task<IEnumerable<FournisseurDto>> GetAllAsync()
         {
-            var entities = _repository.GetAll().ToList();
+            var entities = await _repository.GetAll()
+                .Include(x => x.LFournisseurs)
+                .ToListAsync();
             return _mapper.Map<IEnumerable<FournisseurDto>>(entities);
         }
 
         public async Task<FournisseurDto> GetByIdAsync(params object[] keyValues)
         {
-            var entity = await _repository.GetById(keyValues);
+            var entity = await _repository.GetAll()
+                .Include(x => x.LFournisseurs)
+                .ThenInclude(lf => lf.IdArtNavigation)
+                .FirstOrDefaultAsync(x => x.IdFour == (int)keyValues[0]);
             return _mapper.Map<FournisseurDto>(entity);
         }
 

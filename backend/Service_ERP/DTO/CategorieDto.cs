@@ -1,4 +1,5 @@
-﻿using AutoMapper;
+﻿
+using AutoMapper;
 using Core.Entities;
 namespace Service_ERP.DTO;
 
@@ -15,6 +16,10 @@ public partial class CategorieDto
     public DateTime? DateCreation { get; set; }
 
     public virtual ICollection<SouscategorieDto> Souscategories { get; set; } = new List<SouscategorieDto>();
-    
+
+    public void Mapping(AutoMapper.Profile profile)
+    {
+        profile.CreateMap<Categorie, CategorieDto>().ReverseMap();
+    }
 
 }

@@ -6,6 +6,7 @@ using Core.Entities;
 using DAL.IRepository;
 using Service_ERP.DTO;
 using Service_ERP.IService;
+using Microsoft.EntityFrameworkCore;
 
 namespace Service_ERP.Service
 {
@@ -22,13 +23,18 @@ namespace Service_ERP.Service
 
         public async Task<IEnumerable<ClientDto>> GetAllAsync()
         {
-            var entities = _repository.GetAll().ToList();
+            var entities = await _repository.GetAll()
+                .Include(x => x.Commandes)
+                .ToListAsync();
             return _mapper.Map<IEnumerable<ClientDto>>(entities);
         }
 
         public async Task<ClientDto> GetByIdAsync(params object[] keyValues)
         {
-            var entity = await _repository.GetById(keyValues);
+            var entity = await _repository.GetAll()
+                .Include(x => x.Commandes)
+                .ThenInclude(c => c.LCommandes)
+                .FirstOrDefaultAsync(x => x.IdClt == (int)keyValues[0]);
             return _mapper.Map<ClientDto>(entity);
         }
 

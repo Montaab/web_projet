@@ -19,5 +19,9 @@ public partial class FournisseurDto
     public string Ville { get; set; }
 
     public virtual ICollection<LFournisseurDto> LFournisseurs { get; set; } = new List<LFournisseurDto>();
-    
+    public void Mapping(AutoMapper.Profile profile)
+    {
+        profile.CreateMap<Fournisseur, FournisseurDto>().ReverseMap();
+    }
+
 }

@@ -1,5 +1,8 @@
 using Core.Entities;
-﻿using System;
+
+using AutoMapper;
+using Core.Entities;
+using System;
 using System.Collections.Generic;
 
 namespace Service_ERP.DTO;
@@ -23,5 +26,11 @@ public partial class CommandeDto
     public virtual ClientDto? IdCltNavigation { get; set; }
 
     public virtual ICollection<LCommandeDto> LCommandes { get; set; } = new List<LCommandeDto>();
-    
+
+    public void Mapping(AutoMapper.Profile profile)
+    {
+        profile.CreateMap<Commande, CommandeDto>().ReverseMap();
+        profile.CreateMap<Client, ClientDto>().ReverseMap();
+
+    }
 }

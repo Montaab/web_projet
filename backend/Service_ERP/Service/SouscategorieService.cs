@@ -6,6 +6,7 @@ using Core.Entities;
 using DAL.IRepository;
 using Service_ERP.DTO;
 using Service_ERP.IService;
+using Microsoft.EntityFrameworkCore;
 
 namespace Service_ERP.Service
 {
@@ -22,13 +23,19 @@ namespace Service_ERP.Service
 
         public async Task<IEnumerable<SouscategorieDto>> GetAllAsync()
         {
-            var entities = _repository.GetAll().ToList();
+            var entities = await _repository.GetAll()
+                .Include(x => x.IdCatNavigation)
+                .Include(x => x.Articles)
+                .ToListAsync();
             return _mapper.Map<IEnumerable<SouscategorieDto>>(entities);
         }
 
         public async Task<SouscategorieDto> GetByIdAsync(params object[] keyValues)
         {
-            var entity = await _repository.GetById(keyValues);
+            var entity = await _repository.GetAll()
+                .Include(x => x.IdCatNavigation)
+                .Include(x => x.Articles)
+                .FirstOrDefaultAsync(x => x.IdScat == (int)keyValues[0]);
             return _mapper.Map<SouscategorieDto>(entity);
         }
 

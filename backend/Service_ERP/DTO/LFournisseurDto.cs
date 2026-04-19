@@ -14,8 +14,14 @@ public partial class LFournisseurDto
 
     public decimal? PrixFournisseur { get; set; }
 
-    public virtual Article IdArtNavigation { get; set; }
+    public virtual ArticleDto? IdArtNavigation { get; set; }
 
-    public virtual FournisseurDto IdFourNavigation { get; set; }
-    
+    public virtual FournisseurDto? IdFourNavigation { get; set; }
+    public void Mapping(AutoMapper.Profile profile)
+    {
+        profile.CreateMap<LFournisseur, LFournisseurDto>().ReverseMap();
+        profile.CreateMap<Article, ArticleDto>().ReverseMap();
+        profile.CreateMap<Fournisseur, FournisseurDto>().ReverseMap();
+    }
+
 }

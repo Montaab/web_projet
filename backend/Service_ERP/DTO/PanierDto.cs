@@ -1,4 +1,8 @@
 using Core.Entities;
+
+
+using AutoMapper;
+using Core.Entities;
 ﻿using System;
 using System.Collections.Generic;
 
@@ -13,5 +17,9 @@ public partial class PanierDto
     public int? IdClt { get; set; }
 
     public virtual ICollection<LPanierDto> LPaniers { get; set; } = new List<LPanierDto>();
-    
+
+    public void Mapping(AutoMapper.Profile profile)
+    {
+        profile.CreateMap<Panier, PanierDto>().ReverseMap();
+    }
 }

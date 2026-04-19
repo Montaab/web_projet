@@ -16,8 +16,14 @@ public partial class LCommandeDto
 
     public decimal? Remise { get; set; }
 
-    public virtual Article? IdArtNavigation { get; set; }
+    public virtual ArticleDto? IdArtNavigation { get; set; }
 
     public virtual CommandeDto? IdComNavigation { get; set; }
-    
+        public void Mapping(AutoMapper.Profile profile)
+        {
+            profile.CreateMap<LCommande, LCommandeDto>().ReverseMap();
+            profile.CreateMap<Article, ArticleDto>().ReverseMap();
+            profile.CreateMap<Commande, CommandeDto>().ReverseMap();
+    }
+
 }

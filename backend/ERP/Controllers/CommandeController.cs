@@ -35,6 +35,7 @@ namespace ERP.Controllers
         }
 
         // POST /Commande
+        // Vous pouvez envoyer les lignes de commande dans la propriété "lCommandes" du CommandeDto.
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] CommandeDto dto)
         {

@@ -28,5 +28,11 @@ public partial class ArticleDto
 
     public virtual ICollection<LPanierDto> LPaniers { get; set; } = new List<LPanierDto>();
 
-    
+    public void Mapping(AutoMapper.Profile profile)
+    {
+        profile.CreateMap<Article, ArticleDto>().ReverseMap();
+        profile.CreateMap<Souscategorie, SouscategorieDto>().ReverseMap();
+
+    }
+
 }

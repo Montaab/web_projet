@@ -1,4 +1,7 @@
 using Core.Entities;
+
+using AutoMapper;
+using Core.Entities;
 ﻿using System;
 using System.Collections.Generic;
 
@@ -14,8 +17,15 @@ public partial class LPanierDto
 
     public DateTime? DateAjout { get; set; }
 
-    public virtual Article? IdArtNavigation { get; set; }
+    public virtual ArticleDto? IdArtNavigation { get; set; }
 
     public virtual PanierDto? IdPanNavigation { get; set; }
-    
+
+    public void Mapping(AutoMapper.Profile profile)
+    {
+        profile.CreateMap<LPanier, LPanierDto>().ReverseMap();
+            profile.CreateMap<Article, ArticleDto>().ReverseMap();
+            profile.CreateMap<Panier, PanierDto>().ReverseMap();
+
+    }
 }
