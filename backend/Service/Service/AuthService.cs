@@ -96,7 +96,7 @@ namespace Service.Service
             accessTkn=new AccessTkn 
             {
                 AccessToken= new JwtSecurityTokenHandler().WriteToken(token),
-                ExpireIn = _settings.LifetimeMinutes * 60
+                ExpireIn = _settings.LifetimeMinutes * 60   
             };
 
             return accessTkn;

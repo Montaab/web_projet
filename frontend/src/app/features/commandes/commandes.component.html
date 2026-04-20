@@ -17,17 +17,30 @@
     <table>
       <thead>
         <tr>
+          <th style="width: 40px;"></th>
           <th>Réf.</th>
           <th>Client</th>
           <th>Date</th>
           <th>Statut</th>
+          <th>Articles</th>
           <th style="text-align: right;">Total</th>
           <th style="text-align: right;">Actions</th>
         </tr>
       </thead>
       <tbody>
         @for (com of commandes; track com.idCom) {
-          <tr>
+          <tr class="main-row" [class.row-expanded]="isExpanded(com.idCom)" (click)="toggleExpand(com)">
+            <td class="expand-cell">
+              @if (isLoadingDetail(com.idCom)) {
+                <span class="mini-spinner"></span>
+              } @else {
+                <svg class="expand-icon" [class.rotated]="isExpanded(com.idCom)"
+                  xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24"
+                  fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M6 9l6 6 6-6"/>
+                </svg>
+              }
+            </td>
             <td style="font-weight: 600;">#{{ com.idCom }}</td>
             <td>{{ getClientName(com.idClt) }}</td>
             <td>{{ com.dateCom | date:'dd/MM/yyyy' }}</td>
@@ -36,20 +49,113 @@
                 {{ com.statut }}
               </span>
             </td>
+            <td>
+              <span class="articles-count">
+                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" x2="21" y1="6" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/>
+                </svg>
+                {{ com.lCommandes?.length ?? '...' }} article{{ (com.lCommandes?.length ?? 0) > 1 ? 's' : '' }}
+              </span>
+            </td>
             <td style="text-align: right; font-weight: 600;">
               {{ com.total | number:'1.2-2' }} €
             </td>
-            <td style="text-align: right;">
+            <td style="text-align: right;" (click)="$event.stopPropagation()">
               <div class="actions">
-                <button class="btn-icon" (click)="openEdit(com)"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-pencil"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/><path d="m15 5 4 4"/></svg></button>
-                <button class="btn-icon text-danger" (click)="deleteCom(com.idCom)"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-trash-2"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/><line x1="10" x2="10" y1="11" y2="17"/><line x1="14" x2="14" y1="11" y2="17"/></svg></button>
+                <button class="btn-icon" (click)="openEdit(com)">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/><path d="m15 5 4 4"/>
+                  </svg>
+                </button>
+                <button class="btn-icon text-danger" (click)="deleteCom(com.idCom)">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/>
+                    <line x1="10" x2="10" y1="11" y2="17"/><line x1="14" x2="14" y1="11" y2="17"/>
+                  </svg>
+                </button>
               </div>
             </td>
           </tr>
+
+          <!-- Ligne détail articles (expansible) -->
+          @if (isExpanded(com.idCom)) {
+            <tr class="detail-row">
+              <td colspan="8" class="detail-cell">
+                @if (isLoadingDetail(com.idCom)) {
+                  <div class="detail-loading">Chargement des articles...</div>
+                } @else if (com.lCommandes && com.lCommandes.length > 0) {
+                  <div class="detail-articles">
+                    <div class="detail-articles-header">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M11 21.73a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73z"/>
+                        <path d="M12 22V12"/><path d="m3.3 7 8.7 5 8.7-5"/>
+                      </svg>
+                      Détail des articles commandés
+                    </div>
+                    <table class="detail-table">
+                      <thead>
+                        <tr>
+                          <th>Article</th>
+                          <th style="text-align: center;">Quantité</th>
+                          <th style="text-align: right;">Prix unitaire</th>
+                          <th style="text-align: right;">Remise</th>
+                          <th style="text-align: right;">Sous-total</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        @for (line of com.lCommandes; track line.idArt) {
+                          <tr>
+                            <td>
+                              <div class="article-name">
+                                <span class="article-dot"></span>
+                                {{ getArticleName(line.idArt) }}
+                              </div>
+                            </td>
+                            <td style="text-align: center;">
+                              <span class="qty-badge">{{ line.quantite }}</span>
+                            </td>
+                            <td style="text-align: right;">{{ line.prixAchat | number:'1.2-2' }} €</td>
+                            <td style="text-align: right;">
+                              @if (line.remise && line.remise > 0) {
+                                <span class="remise-badge">- {{ line.remise | number:'1.2-2' }} €</span>
+                              } @else {
+                                <span style="color: var(--text-secondary);">—</span>
+                              }
+                            </td>
+                            <td style="text-align: right; font-weight: 600;">
+                              {{ getLineSousTotal(line) | number:'1.2-2' }} €
+                            </td>
+                          </tr>
+                        }
+                      </tbody>
+                      <tfoot>
+                        <tr class="detail-total-row">
+                          <td colspan="4" style="text-align: right; font-weight: 600;">Total commande :</td>
+                          <td style="text-align: right; font-weight: 700; color: var(--accent-light);">{{ com.total | number:'1.2-2' }} €</td>
+                        </tr>
+                      </tfoot>
+                    </table>
+                  </div>
+                } @else {
+                  <div class="detail-empty">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <circle cx="12" cy="12" r="10"/><line x1="12" x2="12" y1="8" y2="12"/><line x1="12" x2="12.01" y1="16" y2="16"/>
+                    </svg>
+                    Aucun article trouvé pour cette commande.
+                  </div>
+                }
+              </td>
+            </tr>
+          }
         } @empty {
           <tr>
-            <td colspan="6" style="text-align: center; padding: 60px; color: var(--text-secondary);">
-              <div style="font-size: 40px; margin-bottom: 16px;"><svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-package"><path d="M11 21.73a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73z"/><path d="M12 22V12"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="m7.5 4.5 7.5 4.4"/></svg></div>
+            <td colspan="8" style="text-align: center; padding: 60px; color: var(--text-secondary);">
+              <div style="font-size: 40px; margin-bottom: 16px;">
+                <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M11 21.73a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73z"/>
+                  <path d="M12 22V12"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="m7.5 4.5 7.5 4.4"/>
+                </svg>
+              </div>
               <p>Aucune commande trouvée.</p>
             </td>
           </tr>

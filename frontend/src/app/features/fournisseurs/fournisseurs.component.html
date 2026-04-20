@@ -4,7 +4,8 @@
     <p>Gérez vos partenaires et fournisseurs</p>
   </div>
   <button class="btn btn-primary" (click)="openAdd()">
-    <span>➕</span> Ajouter un fournisseur
+    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5v14"/></svg>
+    Ajouter un fournisseur
   </button>
 </div>
 
@@ -17,20 +18,33 @@
     <table>
       <thead>
         <tr>
+          <th style="width: 40px;"></th>
           <th>Société</th>
           <th>Contact</th>
-          <th>Ville</th>
+          <th>Adresse</th>
+          <th>Articles</th>
           <th style="text-align: right;">Actions</th>
         </tr>
       </thead>
       <tbody>
         @for (f of fournisseurs; track f.idFour) {
-          <tr>
+
+          <!-- Ligne principale -->
+          <tr class="main-row" [class.row-expanded]="isExpanded(f.idFour)" (click)="toggleExpand(f)">
+            <td class="expand-cell">
+              @if (isLoadingDetail(f.idFour)) {
+                <span class="mini-spinner"></span>
+              } @else {
+                <svg class="expand-icon" [class.rotated]="isExpanded(f.idFour)"
+                  xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24"
+                  fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M6 9l6 6 6-6"/>
+                </svg>
+              }
+            </td>
             <td>
               <div class="fourn-cell">
-                <div class="fourn-avatar">
-                  {{ f.nomSociete.charAt(0) }}
-                </div>
+                <div class="fourn-avatar">{{ f.nomSociete.charAt(0) }}</div>
                 <div>
                   <div class="fourn-name">{{ f.nomSociete }}</div>
                   <div class="fourn-id">ID: {{ f.idFour }}</div>
@@ -41,18 +55,135 @@
               <div style="font-size: 13px; font-weight: 500;">{{ f.tel }}</div>
               <div style="font-size: 12px; color: var(--text-secondary)">{{ f.email }}</div>
             </td>
-            <td>{{ f.ville }}</td>
-            <td style="text-align: right;">
+            <td>
+              <div style="font-size: 13px;">{{ f.ville }}</div>
+              <div style="font-size: 12px; color: var(--text-secondary);">{{ f.adresse }}</div>
+            </td>
+            <td>
+              <span class="articles-count">
+                <svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M11 21.73a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73z"/>
+                  <path d="M12 22V12"/><path d="m3.3 7 8.7 5 8.7-5"/>
+                </svg>
+                {{ f.lFournisseurs?.length ?? '...' }}
+                article{{ (f.lFournisseurs?.length ?? 0) > 1 ? 's' : '' }}
+              </span>
+            </td>
+            <td style="text-align: right;" (click)="$event.stopPropagation()">
               <div class="actions">
-                <button class="btn-icon" (click)="openEdit(f)"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-pencil"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/><path d="m15 5 4 4"/></svg></button>
-                <button class="btn-icon text-danger" (click)="delete(f.idFour)"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-trash-2"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/><line x1="10" x2="10" y1="11" y2="17"/><line x1="14" x2="14" y1="11" y2="17"/></svg></button>
+                <button class="btn-icon" (click)="openEdit(f)">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/><path d="m15 5 4 4"/>
+                  </svg>
+                </button>
+                <button class="btn-icon text-danger" (click)="delete(f.idFour)">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/>
+                    <line x1="10" x2="10" y1="11" y2="17"/><line x1="14" x2="14" y1="11" y2="17"/>
+                  </svg>
+                </button>
               </div>
             </td>
           </tr>
+
+          <!-- Ligne détail articles (expansible) -->
+          @if (isExpanded(f.idFour)) {
+            <tr class="detail-row">
+              <td colspan="6" class="detail-cell">
+                @if (isLoadingDetail(f.idFour)) {
+                  <div class="detail-loading">
+                    <span class="mini-spinner"></span>
+                    Chargement des articles fournisseur...
+                  </div>
+                } @else if (f.lFournisseurs && f.lFournisseurs.length > 0) {
+                  <div class="detail-articles">
+
+                    <div class="detail-header">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M11 21.73a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73z"/>
+                        <path d="M12 22V12"/><path d="m3.3 7 8.7 5 8.7-5"/>
+                      </svg>
+                      Catalogue articles — {{ f.nomSociete }} ({{ f.lFournisseurs.length }} article{{ f.lFournisseurs.length > 1 ? 's' : '' }})
+                    </div>
+
+                    <table class="detail-table">
+                      <thead>
+                        <tr>
+                          <th>Désignation</th>
+                          <th>Description</th>
+                          <th style="text-align: center;">Stock</th>
+                          <th style="text-align: right;">Prix vente</th>
+                          <th style="text-align: right;">Prix fournisseur</th>
+                          <th style="text-align: right;">Marge</th>
+                          <th style="text-align: center;">Délai livraison</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        @for (line of f.lFournisseurs; track line.idArt) {
+                          <tr>
+                            <td>
+                              <div class="article-name">
+                                <span class="article-dot"></span>
+                                <div>
+                                  <div style="font-weight: 600; font-size: 13px;">{{ getArticleName(line) }}</div>
+                                  <div style="font-size: 11px; color: var(--text-secondary);">Art. #{{ line.idArt }}</div>
+                                </div>
+                              </div>
+                            </td>
+                            <td>
+                              <span class="description-text">
+                                {{ line.idArtNavigation?.description || '—' }}
+                              </span>
+                            </td>
+                            <td style="text-align: center;">
+                              <span class="stock-badge" [class.stock-low]="getStock(line) < 10" [class.stock-ok]="getStock(line) >= 10">
+                                {{ getStock(line) }}
+                              </span>
+                            </td>
+                            <td style="text-align: right; font-weight: 600;">
+                              {{ getArticlePrice(line) | number:'1.2-2' }} €
+                            </td>
+                            <td style="text-align: right; font-weight: 700; color: var(--accent-light);">
+                              {{ getPrixFournisseur(line) | number:'1.2-2' }} €
+                            </td>
+                            <td style="text-align: right;">
+                              <span class="marge-badge" [ngClass]="getMargeClass(line)">
+                                {{ getMargePercent(line) }}
+                              </span>
+                            </td>
+                            <td style="text-align: center;">
+                              <span class="delai-badge">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                  <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
+                                </svg>
+                                {{ getDelai(line) }} j.
+                              </span>
+                            </td>
+                          </tr>
+                        }
+                      </tbody>
+                    </table>
+                  </div>
+                } @else {
+                  <div class="detail-empty">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <circle cx="12" cy="12" r="10"/><line x1="12" x2="12" y1="8" y2="12"/><line x1="12" x2="12.01" y1="16" y2="16"/>
+                    </svg>
+                    Aucun article référencé pour ce fournisseur.
+                  </div>
+                }
+              </td>
+            </tr>
+          }
+
         } @empty {
           <tr>
-            <td colspan="4" style="text-align: center; padding: 60px; color: var(--text-secondary);">
-              <div style="font-size: 40px; margin-bottom: 16px;">🏭</div>
+            <td colspan="6" style="text-align: center; padding: 60px; color: var(--text-secondary);">
+              <div style="margin-bottom: 16px;">
+                <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/>
+                </svg>
+              </div>
               <p>Aucun fournisseur trouvé.</p>
             </td>
           </tr>
@@ -62,14 +193,15 @@
   </div>
 }
 
+<!-- Modal Ajout / Édition -->
 @if (showModal) {
   <div class="modal-overlay">
     <div class="modal-box">
       <div class="modal-header">
-        <h3>{{ editMode ? 'Modifier' : 'Ajouter' }} fournisseur</h3>
+        <h3>{{ editMode ? 'Modifier' : 'Ajouter' }} un fournisseur</h3>
         <button class="modal-close" (click)="showModal = false">×</button>
       </div>
-      
+
       <div class="modal-grid">
         <div class="form-group full">
           <label>Nom de la Société</label>
@@ -101,11 +233,16 @@
   </div>
 }
 
+<!-- Modal Suppression -->
 @if (showDeleteModal) {
   <div class="modal-overlay">
     <div class="modal-box" style="max-width: 400px; text-align: center;">
       <div style="color: var(--danger); margin-bottom: 20px;">
-        <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-trash-2"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/><line x1="10" x2="10" y1="11" y2="17"/><line x1="14" x2="14" y1="11" y2="17"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/>
+          <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/>
+          <line x1="10" x2="10" y1="11" y2="17"/><line x1="14" x2="14" y1="11" y2="17"/>
+        </svg>
       </div>
       <h3 style="margin-bottom: 12px;">Confirmer la suppression</h3>
       <p style="color: var(--text-secondary); margin-bottom: 32px;">

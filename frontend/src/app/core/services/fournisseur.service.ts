@@ -14,6 +14,10 @@ export class FournisseurService {
     return this.http.get<Fournisseur[]>(this.url); 
   }
 
+  getById(id: number): Observable<Fournisseur> {
+    return this.http.get<Fournisseur>(`${this.url}/${id}`);
+  }
+
   add(f: Fournisseur): Observable<Fournisseur> { 
     const payload = {
       nomSociete: f.nomSociete || "",

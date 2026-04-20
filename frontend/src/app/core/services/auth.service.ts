@@ -40,6 +40,24 @@ export class AuthService {
   }
 
   isLoggedIn(): boolean {
-    return !!this.getToken();
+  const token = this.getToken();
+  if (!token) return false;
+
+  try {
+    const payload = JSON.parse(atob(token.split('.')[1]));
+    const exp = payload.exp;
+
+    const now = Math.floor(Date.now() / 1000);
+
+    if (exp < now) {
+      this.logout(); // 🔥 supprime + redirect
+      return false;
+    }
+
+    return true;
+  } catch (e) {
+    this.logout(); // token invalide
+    return false;
   }
+}
 }

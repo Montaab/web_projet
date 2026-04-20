@@ -26,6 +26,11 @@ export class CommandesComponent implements OnInit {
   showModal = false;
   editMode = false;
 
+  // Gestion de l'expansion des lignes
+  expandedRows = new Set<number>();
+  loadingDetails = new Set<number>();
+  detailsCache = new Map<number, Commande>();
+
   currentCom: Commande = this.initNewCommande();
 
   constructor(
@@ -54,6 +59,50 @@ export class CommandesComponent implements OnInit {
       total: 0,
       lCommandes: []
     };
+  }
+
+  // --- Gestion de l'expansion ---
+  toggleExpand(com: Commande): void {
+    if (!com.idCom) return;
+    const id = com.idCom;
+
+    if (this.expandedRows.has(id)) {
+      this.expandedRows.delete(id);
+      return;
+    }
+
+    this.expandedRows.add(id);
+
+    // Si déjà en cache ou si les lignes sont déjà chargées, on ne refait pas l'appel
+    if (this.detailsCache.has(id) || (com.lCommandes && com.lCommandes.length > 0)) {
+      return;
+    }
+
+    this.loadingDetails.add(id);
+    this.service.getById(id).subscribe({
+      next: (detail) => {
+        this.detailsCache.set(id, detail);
+        // Mettre à jour la commande dans la liste principale
+        const idx = this.commandes.findIndex(c => c.idCom === id);
+        if (idx !== -1) {
+          this.commandes[idx] = { ...this.commandes[idx], lCommandes: detail.lCommandes };
+        }
+        this.loadingDetails.delete(id);
+      },
+      error: () => this.loadingDetails.delete(id)
+    });
+  }
+
+  isExpanded(id: number | undefined): boolean {
+    return !!id && this.expandedRows.has(id);
+  }
+
+  isLoadingDetail(id: number | undefined): boolean {
+    return !!id && this.loadingDetails.has(id);
+  }
+
+  getLineSousTotal(line: LCommande): number {
+    return (line.prixAchat * line.quantite) - (line.remise || 0);
   }
 
   load(): void {

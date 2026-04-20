@@ -14,6 +14,10 @@ export class CommandeService {
     return this.http.get<Commande[]>(this.url); 
   }
 
+  getById(id: number): Observable<Commande> {
+    return this.http.get<Commande>(`${this.url}/${id}`);
+  }
+
   add(c: Commande): Observable<Commande> { 
     const payload = {
       dateCom: c.dateCom,
