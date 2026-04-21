@@ -1,11 +1,9 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Service.DTO;
 using Service.IService;
 using Service.Models;
-
 
 namespace User.API.Controllers
 {
@@ -15,7 +13,6 @@ namespace User.API.Controllers
     [ApiController]
     public class UtilisateurController : ControllerBase
     {
-
         private readonly IUtilisateurService _service;
         private readonly Serilog.ILogger _logger;
 
@@ -25,149 +22,115 @@ namespace User.API.Controllers
             _logger = logger;
         }
 
-
-
-        /// <summary>
-        /// Islogin.
-        /// </summary>
-        /// <param name="login">Connection.</param>
-        /// <returns></returns>
-        [Route("IsLogin")]
-        [HttpPost]
-        public async Task<ActionResult<ResponseLogin?>> isLogin(Login login)
+        // =========================
+        // LOGIN
+        // =========================
+        [HttpPost("IsLogin")]
+        public async Task<ActionResult<ResponseLogin>> Login([FromBody] Login login)
         {
-            Dictionary<string, string> dict = new Dictionary<string, string>();
             try
             {
-                var usr = await _service.Islogin(login).ConfigureAwait(false);
-                if (!String.IsNullOrEmpty(usr?.AccessToken))
-                {
-                    return new OkObjectResult(usr);
-                }
-                else
-                {
-                    dict.Add("Message", "Echec de connection");
-                    return NotFound(dict);
-                }
+                var result = await _service.Login(login);
 
+                if (result == null)
+                    return Unauthorized(new { Message = "Username ou mot de passe incorrect" });
+
+                return Ok(result);
             }
             catch (Exception ex)
             {
-
-                _logger.Error("Erreur  Islogin <==> " + ex.ToString());
-                var showmessage = "Erreur" + ex.Message;
-                dict.Add("Message", showmessage);
-                return BadRequest(dict);
+                _logger.Error($"Erreur Login: {ex}");
+                return StatusCode(500, new { Message = "Erreur serveur" });
             }
         }
 
-        /// <summary>
-        /// Ajout Utilisateur
-        /// </summary>
-        /// <param name=""></param>
-        /// <returns></returns>
-        [Route("AddUser")]
-        [HttpPost]
-        public async Task<ActionResult> Ajout(UtilisateurDto usr)
-        {
-            Dictionary<string, string> dict = new Dictionary<string, string>();
-            try
-            {
-                var Ajt = await _service.AddUtilisateur(usr).ConfigureAwait(false);
-                if (Ajt)
-                {
-                    dict.Add("Message", "Succée d'insertion");
-                    return Ok(dict);
-                }
-                else
-                {
-                    dict.Add("Message", "Echec d'Insertion");
-                    return NotFound(dict);
-                }
-
-            }
-            catch (Exception ex)
-            {
-
-                _logger.Error("Erreur Ajout Utilisateur <==> " + ex.ToString());
-                var showmessage = "Erreur" + ex.Message;
-                dict.Add("Message", showmessage);
-                return BadRequest(dict);
-            }
-        }
-
-        /// <summary>
-        /// Modification Utilisateur
-        /// </summary>
-        /// <param name="usr"></param>
-        /// <returns></returns>
-
-        [Route("UpdUser")]
-        [HttpPut]
-        public async Task<ActionResult> Modif(UtilisateurDto usr)
-        {
-            Dictionary<string, string> dict = new Dictionary<string, string>();
-            try
-            {
-                var Ajt = await _service.UpdUtilisateur(usr).ConfigureAwait(false);
-                if (Ajt)
-                {
-                    dict.Add("Message", "Succée de MAJ");
-                    return Ok(dict);
-                }
-                else
-                {
-                    dict.Add("Message", "Echec de MAJ");
-                    return NotFound(dict);
-                }
-
-            }
-            catch (Exception ex)
-            {
-
-                _logger.Error("Erreur Modification Utilisateur <==> " + ex.ToString());
-                var showmessage = "Erreur" + ex.Message;
-                dict.Add("Message", showmessage);
-                return BadRequest(dict);
-            }
-        }
-
-
-        /// <summary>
-        /// Liste de tous les Utilisateurs
-        /// </summary>
-        /// <param name="usr"></param>
-        /// <returns></returns>
-
+        // =========================
+        // GET ALL
+        // =========================
         [Authorize]
-        [Route("Users")]
         [HttpGet]
-        public async Task<ActionResult<List<UtilisateurDto>>> GetAll()
+        public async Task<ActionResult<IEnumerable<UtilisateurDto>>> GetAll()
         {
-            Dictionary<string, string> dict = new Dictionary<string, string>();
+            var result = await _service.GetAllAsync();
+            return Ok(result);
+        }
+
+        // =========================
+        // GET BY ID
+        // =========================
+        [Authorize]
+        [HttpGet("{id}")]
+        public async Task<ActionResult<UtilisateurDto>> GetById(int id)
+        {
+            var result = await _service.GetByIdAsync(id);
+
+            if (result == null)
+                return NotFound();
+
+            return Ok(result);
+        }
+
+        // =========================
+        // ADD
+        // =========================
+        [HttpPost]
+        public async Task<ActionResult<UtilisateurDto>> Add([FromBody] UtilisateurDto dto)
+        {
             try
             {
-                var usrs = _service.GetAll();
-                if (usrs.Count() != 0)
-                {
-                    return new OkObjectResult(usrs);
-                }
-                else
-                {
-                    dict.Add("Message", "Liste vide");
-                    return NotFound(dict);
-                }
+                var result = await _service.AddAsync(dto);
 
+                if (result == null)
+                    return BadRequest(new { Message = "Email déjà existant" });
+
+                return Ok(result);
             }
             catch (Exception ex)
             {
-
-                _logger.Error("Erreur GetAll Utilisateur <==> " + ex.ToString());
-                var showmessage = "Erreur" + ex.Message;
-                dict.Add("Message", showmessage);
-                return BadRequest(dict);
+                _logger.Error($"Erreur AddUser: {ex}");
+                return StatusCode(500, new { Message = "Erreur serveur" });
             }
         }
 
+        // =========================
+        // UPDATE
+        // =========================
+        [Authorize]
+        [HttpPut("{id}")]
+        public async Task<IActionResult> Update(int id, [FromBody] UtilisateurDto dto)
+        {
+            if (id != dto.Iduser)
+                return BadRequest();
+
+            try
+            {
+                await _service.UpdateAsync(dto);
+                return Ok(new { Message = "Mise à jour réussie" });
+            }
+            catch (Exception ex)
+            {
+                _logger.Error($"Erreur UpdateUser: {ex}");
+                return StatusCode(500, new { Message = "Erreur serveur" });
+            }
+        }
+
+        // =========================
+        // DELETE
+        // =========================
+        [Authorize]
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> Delete(int id)
+        {
+            try
+            {
+                await _service.DeleteAsync(id);
+                return Ok(new { Message = "Suppression réussie" });
+            }
+            catch (Exception ex)
+            {
+                _logger.Error($"Erreur DeleteUser: {ex}");
+                return StatusCode(500, new { Message = "Erreur serveur" });
+            }
+        }
     }
 }
