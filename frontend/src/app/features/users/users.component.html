@@ -1,0 +1,127 @@
+<div class="page-header">
+  <div>
+    <h2>Utilisateurs</h2>
+    <p>Gérez les utilisateurs de votre système</p>
+  </div>
+  <button class="btn btn-primary" (click)="openAdd()">
+    <span>➕</span> Ajouter un utilisateur
+  </button>
+</div>
+
+@if (loading) {
+  <div class="card" style="text-align: center; padding: 40px;">
+    <span class="spinner"></span> Chargement des utilisateurs...
+  </div>
+} @else {
+  <div class="card table-wrapper animate-in">
+    <table>
+      <thead>
+        <tr>
+          <th>Utilisateur</th>
+          <th>Email</th>
+          <th>Rôle</th>
+          <th>Statut</th>
+          <th style="text-align: right;">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (user of users; track user.idUser) {
+          <tr>
+            <td>
+              <div>
+                <div class="art-name">{{ user.username }}</div>
+                <div class="art-desc">ID: {{ user.idUser }}</div>
+              </div>
+            </td>
+            <td>{{ user.email }}</td>
+            <td>
+              <span class="badge badge-info">{{ user.role }}</span>
+            </td>
+            <td>
+              <span class="badge" [ngClass]="user.isActive ? 'badge-success' : 'badge-danger'">
+                {{ user.isActive ? 'Actif' : 'Inactif' }}
+              </span>
+            </td>
+            <td style="text-align: right;">
+              <div class="actions">
+                <button class="btn-icon" (click)="openEdit(user)"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-pencil"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/><path d="m15 5 4 4"/></svg></button>
+                <button class="btn-icon text-danger" (click)="deleteUser(user.idUser)"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-trash-2"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/><line x1="10" x2="10" y1="11" y2="17"/><line x1="14" x2="14" y1="11" y2="17"/></svg></button>
+              </div>
+            </td>
+          </tr>
+        } @empty {
+          <tr>
+            <td colspan="5" style="text-align: center; padding: 40px; color: var(--text-secondary);">
+              Aucun utilisateur trouvé dans la base de données.
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+}
+
+@if (showModal) {
+  <div class="modal-overlay">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h3>{{ editMode ? 'Modifier' : 'Ajouter' }} un utilisateur</h3>
+        <button class="modal-close" (click)="showModal = false">×</button>
+      </div>
+      
+      <div class="modal-grid">
+        <div class="form-group full">
+          <label>Nom d'utilisateur</label>
+          <input type="text" class="form-control" [(ngModel)]="currentUser.username">
+        </div>
+        <div class="form-group full">
+          <label>Email</label>
+          <input type="email" class="form-control" [(ngModel)]="currentUser.email">
+        </div>
+        @if (!editMode) {
+          <div class="form-group full">
+            <label>Mot de passe</label>
+            <input type="password" class="form-control" [(ngModel)]="currentUser.password">
+          </div>
+        }
+        <div class="form-group">
+          <label>Rôle</label>
+          <select class="form-control" [(ngModel)]="currentUser.role">
+            <option value="Admin">Administrateur</option>
+            <option value="Manager">Manager</option>
+            <option value="User">Utilisateur</option>
+          </select>
+        </div>
+        <div class="form-group" style="display: flex; align-items: flex-end;">
+          <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+            <input type="checkbox" [(ngModel)]="currentUser.isActive" style="width: auto; height: auto;">
+            <span>Actif</span>
+          </label>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn btn-ghost" (click)="showModal = false">Annuler</button>
+        <button class="btn btn-primary" (click)="save()">Confirmer</button>
+      </div>
+    </div>
+  </div>
+}
+
+@if (showDeleteModal) {
+  <div class="modal-overlay">
+    <div class="modal-box" style="max-width: 400px; text-align: center;">
+      <div style="color: var(--danger); margin-bottom: 20px;">
+        <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-trash-2"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/><line x1="10" x2="10" y1="11" y2="17"/><line x1="14" x2="14" y1="11" y2="17"/></svg>
+      </div>
+      <h3 style="margin-bottom: 12px;">Confirmer la suppression</h3>
+      <p style="color: var(--text-secondary); margin-bottom: 32px;">
+        Êtes-vous sûr de vouloir supprimer cet utilisateur ? Cette action est irréversible.
+      </p>
+      <div style="display: flex; gap: 12px;">
+        <button class="btn btn-ghost" (click)="showDeleteModal = false" style="flex: 1;">Annuler</button>
+        <button class="btn btn-danger" (click)="confirmDelete()" style="flex: 1;">Supprimer</button>
+      </div>
+    </div>
+  </div>
+}

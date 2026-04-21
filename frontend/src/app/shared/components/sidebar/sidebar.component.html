@@ -1,0 +1,67 @@
+<aside class="sidebar">
+  <div class="sidebar-header">
+    <div class="logo-container">
+      <div class="logo" [routerLink]="['/dashboard']" style="cursor: pointer">
+        <span class="logo-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent-light)"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+        </span>
+        <h1>ERP<span class="logo-accent">Ms</span></h1>
+      </div>
+      <button (click)="toggleTheme()" class="theme-toggle" [title]="themeService.getIsDarkMode() ? 'Passer au mode clair' : 'Passer au mode sombre'">
+        <span>{{ themeService.getIsDarkMode() ? '☀️' : '🌙' }}</span>
+      </button>
+    </div>
+  </div>
+
+  <nav class="sidebar-nav">
+    <ul>
+      @for (item of menuItems; track item.path) {
+        <li>
+          <a [routerLink]="item.path" routerLinkActive="active" class="nav-link">
+            <span class="nav-icon" [innerHTML]="getSafeIcon(item.icon)"></span>
+            <span class="nav-label">{{ item.label }}</span>
+          </a>
+        </li>
+      }
+    </ul>
+  </nav>
+
+  <div class="sidebar-footer">
+    <div class="user-info">
+      <div class="user-avatar">
+        {{ currentUser?.nom?.charAt(0) || 'U' }}
+      </div>
+      <div class="user-details">
+        <span class="user-name">{{ currentUser?.nom || 'Utilisateur' }}</span>
+        <span class="user-role">Administrateur</span>
+      </div>
+    </div>
+    <button (click)="confirmLogout()" class="btn-logout" title="Déconnexion">
+      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" x2="9" y1="12" y2="12"/></svg>
+    </button>
+  </div>
+</aside>
+
+<!-- Popup de Confirmation de Déconnexion -->
+@if (showLogoutModal) {
+  <div class="modal-overlay">
+    <div class="modal-box" style="max-width: 380px; text-align: center;">
+      <div style="margin-bottom: 20px; color: var(--danger);">
+        <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" x2="9" y1="12" y2="12"/></svg>
+      </div>
+      <h3 style="margin-bottom: 12px;">Confirmer la déconnexion ?</h3>
+      <p style="color: var(--text-secondary); margin-bottom: 32px;">
+        Souhaitez-vous vraiment quitter votre session en cours ?
+      </p>
+      
+      <div style="display: flex; gap: 12px; justify-content: center;">
+        <button class="btn btn-ghost" (click)="showLogoutModal = false" style="flex: 1;">
+          Annuler
+        </button>
+        <button class="btn btn-danger" (click)="logout()" style="flex: 1;">
+          Se déconnecter
+        </button>
+      </div>
+    </div>
+  </div>
+}

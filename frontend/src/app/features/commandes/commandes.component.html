@@ -1,0 +1,295 @@
+<div class="page-header">
+  <div>
+    <h2>Commandes</h2>
+    <p>Suivez et gérez les commandes clients</p>
+  </div>
+  <button class="btn btn-primary" (click)="openAdd()">
+    <span><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-plus"><path d="M5 12h14"/><path d="M12 5v14"/></svg></span> Nouvelle commande
+  </button>
+</div>
+
+@if (loading) {
+  <div class="card" style="text-align: center; padding: 40px;">
+    <span class="spinner"></span> Chargement...
+  </div>
+} @else {
+  <div class="card table-wrapper animate-in">
+    <table>
+      <thead>
+        <tr>
+          <th style="width: 40px;"></th>
+          <th>Réf.</th>
+          <th>Client</th>
+          <th>Date</th>
+          <th>Statut</th>
+          <th>Articles</th>
+          <th style="text-align: right;">Total</th>
+          <th style="text-align: right;">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (com of commandes; track com.idCom) {
+          <tr class="main-row" [class.row-expanded]="isExpanded(com.idCom)" (click)="toggleExpand(com)">
+            <td class="expand-cell">
+              @if (isLoadingDetail(com.idCom)) {
+                <span class="mini-spinner"></span>
+              } @else {
+                <svg class="expand-icon" [class.rotated]="isExpanded(com.idCom)"
+                  xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24"
+                  fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M6 9l6 6 6-6"/>
+                </svg>
+              }
+            </td>
+            <td style="font-weight: 600;">#{{ com.idCom }}</td>
+            <td>{{ getClientName(com.idClt) }}</td>
+            <td>{{ com.dateCom | date:'dd/MM/yyyy' }}</td>
+            <td>
+              <span class="badge" [ngClass]="getStatusClass(com.statut)">
+                {{ com.statut }}
+              </span>
+            </td>
+            <td>
+              <span class="articles-count">
+                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" x2="21" y1="6" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/>
+                </svg>
+                {{ com.lCommandes?.length ?? '...' }} article{{ (com.lCommandes?.length ?? 0) > 1 ? 's' : '' }}
+              </span>
+            </td>
+            <td style="text-align: right; font-weight: 600;">
+              {{ com.total | number:'1.2-2' }} €
+            </td>
+            <td style="text-align: right;" (click)="$event.stopPropagation()">
+              <div class="actions">
+                <button class="btn-icon" (click)="openEdit(com)">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/><path d="m15 5 4 4"/>
+                  </svg>
+                </button>
+                <button class="btn-icon text-danger" (click)="deleteCom(com.idCom)">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/>
+                    <line x1="10" x2="10" y1="11" y2="17"/><line x1="14" x2="14" y1="11" y2="17"/>
+                  </svg>
+                </button>
+              </div>
+            </td>
+          </tr>
+
+          <!-- Ligne détail articles (expansible) -->
+          @if (isExpanded(com.idCom)) {
+            <tr class="detail-row">
+              <td colspan="8" class="detail-cell">
+                @if (isLoadingDetail(com.idCom)) {
+                  <div class="detail-loading">Chargement des articles...</div>
+                } @else if (com.lCommandes && com.lCommandes.length > 0) {
+                  <div class="detail-articles">
+                    <div class="detail-articles-header">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M11 21.73a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73z"/>
+                        <path d="M12 22V12"/><path d="m3.3 7 8.7 5 8.7-5"/>
+                      </svg>
+                      Détail des articles commandés
+                    </div>
+                    <table class="detail-table">
+                      <thead>
+                        <tr>
+                          <th>Article</th>
+                          <th style="text-align: center;">Quantité</th>
+                          <th style="text-align: right;">Prix unitaire</th>
+                          <th style="text-align: right;">Remise</th>
+                          <th style="text-align: right;">Sous-total</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        @for (line of com.lCommandes; track line.idArt) {
+                          <tr>
+                            <td>
+                              <div class="article-name">
+                                <span class="article-dot"></span>
+                                {{ getArticleName(line.idArt) }}
+                              </div>
+                            </td>
+                            <td style="text-align: center;">
+                              <span class="qty-badge">{{ line.quantite }}</span>
+                            </td>
+                            <td style="text-align: right;">{{ line.prixAchat | number:'1.2-2' }} €</td>
+                            <td style="text-align: right;">
+                              @if (line.remise && line.remise > 0) {
+                                <span class="remise-badge">- {{ line.remise | number:'1.2-2' }} €</span>
+                              } @else {
+                                <span style="color: var(--text-secondary);">—</span>
+                              }
+                            </td>
+                            <td style="text-align: right; font-weight: 600;">
+                              {{ getLineSousTotal(line) | number:'1.2-2' }} €
+                            </td>
+                          </tr>
+                        }
+                      </tbody>
+                      <tfoot>
+                        <tr class="detail-total-row">
+                          <td colspan="4" style="text-align: right; font-weight: 600;">Total commande :</td>
+                          <td style="text-align: right; font-weight: 700; color: var(--accent-light);">{{ com.total | number:'1.2-2' }} €</td>
+                        </tr>
+                      </tfoot>
+                    </table>
+                  </div>
+                } @else {
+                  <div class="detail-empty">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <circle cx="12" cy="12" r="10"/><line x1="12" x2="12" y1="8" y2="12"/><line x1="12" x2="12.01" y1="16" y2="16"/>
+                    </svg>
+                    Aucun article trouvé pour cette commande.
+                  </div>
+                }
+              </td>
+            </tr>
+          }
+        } @empty {
+          <tr>
+            <td colspan="8" style="text-align: center; padding: 60px; color: var(--text-secondary);">
+              <div style="font-size: 40px; margin-bottom: 16px;">
+                <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M11 21.73a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73z"/>
+                  <path d="M12 22V12"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="m7.5 4.5 7.5 4.4"/>
+                </svg>
+              </div>
+              <p>Aucune commande trouvée.</p>
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+}
+
+@if (showModal) {
+  <div class="modal-overlay">
+    <div class="modal-box" style="max-width: 800px;"> <!-- Élargi pour les articles -->
+      <div class="modal-header">
+        <h3>{{ editMode ? 'Modifier' : 'Créer' }} une commande</h3>
+        <button class="modal-close" (click)="showModal = false">×</button>
+      </div>
+      
+      <div class="modal-grid">
+        <div class="form-group">
+          <label>Client</label>
+          <select class="form-control" [(ngModel)]="currentCom.idClt">
+            <option [value]="0" disabled>Sélectionnez un client</option>
+            @for (clt of clients; track clt.idClt) {
+              <option [value]="clt.idClt">{{ clt.nom }} {{ clt.prenom }}</option>
+            }
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Date</label>
+          <input type="date" class="form-control" [(ngModel)]="currentCom.dateCom">
+        </div>
+        <div class="form-group">
+          <label>Statut</label>
+          <select class="form-control" [(ngModel)]="currentCom.statut">
+            <option value="En attente">En attente</option>
+            <option value="En cours">En cours</option>
+            <option value="Livree">Livrée</option>
+            <option value="Annulee">Annulée</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Paiement</label>
+          <select class="form-control" [(ngModel)]="currentCom.modePaiement">
+            <option value="Especes">Espèces</option>
+            <option value="Carte bancaire">Carte bancaire</option>
+            <option value="Virement bancaire">Virement bancaire</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Section Articles -->
+      <div class="lines-section" style="margin-top: 24px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+          <h4 style="font-size: 15px; font-weight: 600;">Articles commandés</h4>
+          <button class="btn btn-ghost btn-sm" (click)="addLine()">+ Ajouter un article</button>
+        </div>
+        
+        <div class="table-wrapper" style="max-height: 250px; overflow-y: auto;">
+          <table class="lines-table">
+            <thead>
+              <tr>
+                <th>Article</th>
+                <th style="width: 100px;">Quantité</th>
+                <th style="width: 120px;">Prix Unitaire</th>
+                <th style="width: 100px;">Remise</th>
+                <th style="text-align: right; width: 100px;">S.Total</th>
+                <th style="width: 40px;"></th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (line of currentCom.lCommandes; track $index) {
+                <tr>
+                  <td>
+                    <select class="form-control form-control-sm" [(ngModel)]="line.idArt" (change)="onArticleChange(line)">
+                      @for (art of articles; track art.idArt) {
+                        <option [value]="art.idArt">{{ art.designation }}</option>
+                      }
+                    </select>
+                  </td>
+                  <td>
+                    <input type="number" class="form-control form-control-sm" [(ngModel)]="line.quantite" (change)="calculateTotal()" min="1">
+                  </td>
+                  <td>
+                    <input type="number" class="form-control form-control-sm" [(ngModel)]="line.prixAchat" (change)="calculateTotal()">
+                  </td>
+                  <td>
+                    <input type="number" class="form-control form-control-sm" [(ngModel)]="line.remise" (change)="calculateTotal()">
+                  </td>
+                  <td style="text-align: right; font-weight: 600;">
+                    {{ (line.prixAchat * line.quantite - (line.remise || 0)) | number:'1.2-2' }} €
+                  </td>
+                  <td>
+                    <button class="text-danger" style="background:none; border:none; cursor:pointer;" (click)="removeLine($index)">×</button>
+                  </td>
+                </tr>
+              } @empty {
+                <tr>
+                  <td colspan="6" style="text-align: center; padding: 20px; color: var(--text-secondary);">
+                    Aucun article ajouté.
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="modal-footer" style="align-items: center; justify-content: space-between;">
+        <div style="font-size: 18px; font-weight: 700;">
+          Total: <span style="color: var(--accent-light);">{{ currentCom.total | number:'1.2-2' }} €</span>
+        </div>
+        <div style="display: flex; gap: 10px;">
+          <button class="btn btn-ghost" (click)="showModal = false">Annuler</button>
+          <button class="btn btn-primary" (click)="save()">Confirmer la commande</button>
+        </div>
+      </div>
+    </div>
+  </div>
+}
+
+@if (showDeleteModal) {
+  <div class="modal-overlay">
+    <div class="modal-box" style="max-width: 400px; text-align: center;">
+      <div style="color: var(--danger); margin-bottom: 20px;">
+        <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-trash-2"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/><line x1="10" x2="10" y1="11" y2="17"/><line x1="14" x2="14" y1="11" y2="17"/></svg>
+      </div>
+      <h3 style="margin-bottom: 12px;">Confirmer la suppression</h3>
+      <p style="color: var(--text-secondary); margin-bottom: 32px;">
+        Êtes-vous sûr de vouloir supprimer cette commande ? Cette action est irréversible.
+      </p>
+      <div style="display: flex; gap: 12px;">
+        <button class="btn btn-ghost" (click)="showDeleteModal = false" style="flex: 1;">Annuler</button>
+        <button class="btn btn-danger" (click)="confirmDelete()" style="flex: 1;">Supprimer</button>
+      </div>
+    </div>
+  </div>
+}

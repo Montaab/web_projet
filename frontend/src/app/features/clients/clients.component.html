@@ -1,0 +1,117 @@
+<div class="page-header">
+  <div>
+    <h2>Clients</h2>
+    <p>Gérez votre base de données clients</p>
+  </div>
+  <button class="btn btn-primary" (click)="openAdd()">
+    <span>➕</span> Ajouter un client
+  </button>
+</div>
+
+@if (loading) {
+  <div class="card" style="text-align: center; padding: 40px;">
+    <span class="spinner"></span> Chargement...
+  </div>
+} @else {
+  <div class="card table-wrapper animate-in">
+    <table>
+      <thead>
+        <tr>
+          <th>Client</th>
+          <th>Téléphone</th>
+          <th>Adresse</th>
+          <th style="text-align: right;">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (clt of clients; track clt.idClt) {
+          <tr>
+            <td>
+              <div class="client-cell">
+                <div class="client-avatar">
+                  {{ clt.nom.charAt(0) }}{{ clt.prenom.charAt(0) }}
+                </div>
+                <div>
+                  <div class="client-name">{{ clt.nom }} {{ clt.prenom }}</div>
+                  <div class="client-email">{{ clt.email }}</div>
+                </div>
+              </div>
+            </td>
+            <td>{{ clt.telephone }}</td>
+            <td>{{ clt.adresse }}</td>
+            <td style="text-align: right;">
+              <div class="actions">
+                <button class="btn-icon" (click)="openEdit(clt)"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-pencil"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/><path d="m15 5 4 4"/></svg></button>
+                <button class="btn-icon text-danger" (click)="deleteClient(clt.idClt)"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-trash-2"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/><line x1="10" x2="10" y1="11" y2="17"/><line x1="14" x2="14" y1="11" y2="17"/></svg></button>
+              </div>
+            </td>
+          </tr>
+        } @empty {
+          <tr>
+            <td colspan="4" style="text-align: center; padding: 60px; color: var(--text-secondary);">
+              <div style="font-size: 40px; margin-bottom: 16px;">👥</div>
+              <p>Aucun client trouvé.</p>
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+}
+
+@if (showModal) {
+  <div class="modal-overlay">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h3>{{ editMode ? 'Modifier' : 'Ajouter' }} un client</h3>
+        <button class="modal-close" (click)="showModal = false">×</button>
+      </div>
+      
+      <div class="modal-grid">
+        <div class="form-group">
+          <label>Nom</label>
+          <input type="text" class="form-control" [(ngModel)]="currentClient.nom">
+        </div>
+        <div class="form-group">
+          <label>Prénom</label>
+          <input type="text" class="form-control" [(ngModel)]="currentClient.prenom">
+        </div>
+        <div class="form-group full">
+          <label>Email</label>
+          <input type="email" class="form-control" [(ngModel)]="currentClient.email">
+        </div>
+        <div class="form-group full">
+          <label>Téléphone</label>
+          <input type="text" class="form-control" [(ngModel)]="currentClient.telephone">
+        </div>
+        <div class="form-group full">
+          <label>Adresse</label>
+          <textarea class="form-control" rows="2" [(ngModel)]="currentClient.adresse"></textarea>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn btn-ghost" (click)="showModal = false">Annuler</button>
+        <button class="btn btn-primary" (click)="save()">Confirmer</button>
+      </div>
+    </div>
+  </div>
+}
+
+@if (showDeleteModal) {
+  <div class="modal-overlay">
+    <div class="modal-box" style="max-width: 400px; text-align: center;">
+      <div style="color: var(--danger); margin-bottom: 20px;">
+        <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-trash-2"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/><line x1="10" x2="10" y1="11" y2="17"/><line x1="14" x2="14" y1="11" y2="17"/></svg>
+      </div>
+      <h3 style="margin-bottom: 12px;">Confirmer la suppression</h3>
+      <p style="color: var(--text-secondary); margin-bottom: 32px;">
+        Êtes-vous sûr de vouloir supprimer ce client ? Cette action est irréversible.
+      </p>
+      <div style="display: flex; gap: 12px;">
+        <button class="btn btn-ghost" (click)="showDeleteModal = false" style="flex: 1;">Annuler</button>
+        <button class="btn btn-danger" (click)="confirmDelete()" style="flex: 1;">Supprimer</button>
+      </div>
+    </div>
+  </div>
+}

@@ -1,0 +1,95 @@
+<div class="page-header">
+  <div>
+    <h2>Catégories</h2>
+    <p>Organisez vos articles par catégories</p>
+  </div>
+  <button class="btn btn-primary" (click)="openAdd()">
+    <span>➕</span> Ajouter une catégorie
+  </button>
+</div>
+
+@if (loading) {
+  <div class="card" style="text-align: center; padding: 40px;"><span class="spinner"></span></div>
+} @else {
+  <div class="card table-wrapper animate-in">
+    <table>
+      <thead>
+        <tr>
+          <th>Code</th>
+          <th>Libellé</th>
+          <th>Description</th>
+          <th style="text-align: right;">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (c of categories; track c.idCat) {
+          <tr>
+            <td><span class="badge badge-accent">{{ c.codeCat }}</span></td>
+            <td><div class="cat-name">{{ c.libelle }}</div></td>
+            <td><div class="cat-desc">{{ c.description }}</div></td>
+            <td style="text-align: right;">
+              <div class="actions">
+                <button class="btn-icon" (click)="openEdit(c)"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-pencil"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/><path d="m15 5 4 4"/></svg></button>
+                <button class="btn-icon text-danger" (click)="delete(c.idCat)"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-trash-2"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/><line x1="10" x2="10" y1="11" y2="17"/><line x1="14" x2="14" y1="11" y2="17"/></svg></button>
+              </div>
+            </td>
+          </tr>
+        } @empty {
+          <tr>
+            <td colspan="4" style="text-align: center; padding: 60px; color: var(--text-secondary);">
+              <div style="font-size: 40px; margin-bottom: 16px;">📂</div>
+              <p>Aucune catégorie trouvée.</p>
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+}
+
+@if (showModal) {
+  <div class="modal-overlay">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h3>{{ editMode ? 'Modifier' : 'Ajouter' }} catégorie</h3>
+        <button class="modal-close" (click)="showModal = false">×</button>
+      </div>
+      <div class="modal-grid">
+        <div class="form-group">
+          <label>Code Catégorie</label>
+          <input type="text" class="form-control" [(ngModel)]="currentCat.codeCat" placeholder="ex: CAT01">
+        </div>
+        <div class="form-group">
+          <label>Libellé</label>
+          <input type="text" class="form-control" [(ngModel)]="currentCat.libelle">
+        </div>
+        <div class="form-group full">
+          <label>Description</label>
+          <textarea class="form-control" rows="3" [(ngModel)]="currentCat.description"></textarea>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-ghost" (click)="showModal = false">Annuler</button>
+        <button class="btn btn-primary" (click)="save()">Confirmer</button>
+      </div>
+    </div>
+  </div>
+}
+
+@if (showDeleteModal) {
+  <div class="modal-overlay">
+    <div class="modal-box" style="max-width: 400px; text-align: center;">
+      <div style="color: var(--danger); margin-bottom: 20px;">
+        <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-trash-2"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/><line x1="10" x2="10" y1="11" y2="17"/><line x1="14" x2="14" y1="11" y2="17"/></svg>
+      </div>
+      <h3 style="margin-bottom: 12px;">Confirmer la suppression</h3>
+      <p style="color: var(--text-secondary); margin-bottom: 32px;">
+        Êtes-vous sûr de vouloir supprimer cette catégorie ? Cette action est irréversible.
+      </p>
+      <div style="display: flex; gap: 12px;">
+        <button class="btn btn-ghost" (click)="showDeleteModal = false" style="flex: 1;">Annuler</button>
+        <button class="btn btn-danger" (click)="confirmDelete()" style="flex: 1;">Supprimer</button>
+      </div>
+    </div>
+  </div>
+}
