@@ -43,7 +43,10 @@ export class CommandesComponent implements OnInit {
   ngOnInit(): void {
     this.load();
     this.clientService.getAll().subscribe(data => this.clients = data);
-    this.articleService.getAll().subscribe(data => this.articles = data);
+    this.articleService.getAll().subscribe(data => {
+      this.articles = data;
+      this.refreshCurrentLinePrices();
+    });
     
     this.route.queryParams.subscribe(params => {
       if (params['action'] === 'add') this.openAdd();
@@ -102,7 +105,7 @@ export class CommandesComponent implements OnInit {
   }
 
   getLineSousTotal(line: LCommande): number {
-    return (line.prixAchat * line.quantite) - (line.remise || 0);
+    return (line.prixAchat * line.quantite) * (1 - (line.remise || 0) / 100);
   }
 
   load(): void {
@@ -125,7 +128,10 @@ export class CommandesComponent implements OnInit {
 
   openEdit(c: Commande): void {
     this.editMode = true;
-    this.currentCom = { ...c, lCommandes: c.lCommandes || [] };
+    this.currentCom = {
+      ...c,
+      lCommandes: (c.lCommandes || []).map(line => ({ ...line }))
+    };
     this.showModal = true;
   }
 
@@ -149,17 +155,31 @@ export class CommandesComponent implements OnInit {
   }
 
   onArticleChange(line: LCommande): void {
-    const art = this.articles.find(a => a.idArt === line.idArt);
-    if (art) {
-      line.prixAchat = art.prixUnitaire || 0;
+    line.idArt = Number(line.idArt);
+    line.prixAchat = this.getArticlePrice(line.idArt);
+    this.calculateTotal();
+  }
+
+  getArticlePrice(articleId: number): number {
+    const art = this.articles.find(a => a.idArt == articleId);
+    return art?.prixUnitaire || 0;
+  }
+
+  refreshCurrentLinePrices(force = false): void {
+    if (this.editMode && !force) {
+      return;
     }
+
+    this.currentCom.lCommandes?.forEach(line => {
+      line.prixAchat = this.getArticlePrice(line.idArt) || line.prixAchat || 0;
+    });
     this.calculateTotal();
   }
 
   calculateTotal(): void {
     let total = 0;
     this.currentCom.lCommandes?.forEach(l => {
-      total += (l.prixAchat * l.quantite) - (l.remise || 0);
+      total += (l.prixAchat * l.quantite) * (1 - (l.remise || 0) / 100);
     });
     this.currentCom.total = total;
   }
@@ -167,6 +187,8 @@ export class CommandesComponent implements OnInit {
   save(): void {
     if (!this.currentCom.idClt) return alert('Veuillez sélectionner un client');
     if (!this.currentCom.lCommandes?.length) return alert('Veuillez ajouter au moins un article');
+
+    this.refreshCurrentLinePrices(true);
 
     const obs: Observable<any> = this.editMode 
       ? this.service.update(this.currentCom)
@@ -177,7 +199,7 @@ export class CommandesComponent implements OnInit {
         this.showModal = false;
         this.load();
       },
-      error: (err) => alert('Erreur lors de l\'enregistrement')
+      error: () => alert('Erreur lors de l\'enregistrement')
     });
   }
 
@@ -199,7 +221,10 @@ export class CommandesComponent implements OnInit {
           this.itemToDelete = undefined;
           this.load();
         },
-        error: () => this.showDeleteModal = false
+        error: () => {
+          this.showDeleteModal = false;
+          alert('Impossible de supprimer cette commande.');
+        }
       });
     }
   }
