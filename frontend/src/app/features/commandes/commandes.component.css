@@ -45,9 +45,11 @@
   padding: 6px;
   border-radius: var(--radius-sm);
   transition: background var(--transition);
-  color: var(--text-secondary);
+  color: var(--text-primary); /* Brighter in dark mode */
 }
-.btn-icon:hover { background: var(--bg-hover); color: var(--text-primary); }
+.light-mode .btn-icon { color: var(--text-secondary); }
+.btn-icon:hover { background: var(--bg-hover); }
+.light-mode .btn-icon:hover { color: var(--text-primary); }
 .text-danger:hover { background: rgba(239, 68, 68, 0.1); color: #ef4444; }
 
 /* ── Articles count badge ────────────────── */
@@ -57,25 +59,28 @@
   gap: 5px;
   font-size: 12px;
   font-weight: 600;
-  color: var(--text-secondary);
+  color: var(--text-primary); /* Brighter */
   background: var(--bg-secondary);
   padding: 3px 9px;
   border-radius: 20px;
   border: 1px solid var(--border);
 }
+.light-mode .articles-count { color: var(--text-secondary); }
 
 /* ── Expand icon ─────────────────────────── */
 .expand-cell {
   width: 40px;
   text-align: center;
-  color: var(--text-secondary);
+  color: var(--text-primary); /* Brighter */
 }
+.light-mode .expand-cell { color: var(--text-secondary); }
 
 .expand-icon {
   transition: transform 0.25s ease;
   display: block;
   margin: 0 auto;
-  opacity: 0.5;
+  opacity: 1; /* Full opacity */
+  color: #fff;
 }
 .expand-icon.rotated { transform: rotate(180deg); opacity: 1; }
 

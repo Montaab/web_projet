@@ -195,7 +195,13 @@
   <div class="modal-box" style="max-width: 800px;"> <!-- Élargi pour les articles -->
     <div class="modal-header">
       <h3>{{ editMode ? 'Modifier' : 'Créer' }} une commande</h3>
-      <button class="modal-close" (click)="showModal = false">×</button>
+      <button class="modal-close" (click)="showModal = false">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+          stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M18 6 6 18" />
+          <path d="m6 6 12 12" />
+        </svg>
+      </button>
     </div>
 
     <div class="modal-grid">
@@ -217,8 +223,8 @@
         <select class="form-control" [(ngModel)]="currentCom.statut">
           <option value="En attente">En attente</option>
           <option value="En cours">En cours</option>
-          <option value="Livree">Livrée</option>
-          <option value="Annulee">Annulée</option>
+          <option value="Livrée">Livrée</option>
+          <option value="Annulée">Annulée</option>
         </select>
       </div>
       <div class="form-group">
@@ -276,8 +282,13 @@
                 {{ getLineSousTotal(line) | number:'1.2-2' }} €
               </td>
               <td>
-                <button class="text-danger" style="background:none; border:none; cursor:pointer;"
-                  (click)="removeLine($index)">×</button>
+                <button class="btn-icon text-danger" (click)="removeLine($index)">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M18 6 6 18" />
+                    <path d="m6 6 12 12" />
+                  </svg>
+                </button>
               </td>
             </tr>
             } @empty {

@@ -12,8 +12,8 @@
   --warning:      #f59e0b;
   --danger:       #ef4444;
   --info:         #38bdf8;
-  --text-primary: #f1f5f9;
-  --text-secondary:#94a3b8;
+  --text-primary: #ffffff; /* Pure white for better visibility */
+  --text-secondary:#cbd5e1; /* Much lighter grey */
   --border:       #334155;
   --sidebar-w:    260px;
   --radius:       12px;
@@ -88,6 +88,12 @@ html, body {
 .form-control:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px rgba(99,102,241,0.2); }
 .form-control::placeholder { color: var(--text-secondary); }
 
+/* Native date picker icon color for dark mode */
+:root:not(.light-mode) .form-control::-webkit-calendar-picker-indicator {
+  filter: invert(1) brightness(1.5);
+  cursor: pointer;
+}
+
 /* ── Table ── */
 .table-wrapper {
   overflow-x: auto; border-radius: var(--radius);
@@ -127,8 +133,8 @@ tbody tr:hover { background: var(--bg-hover); }
 }
 .modal-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px; }
 .modal-header h3 { font-size: 18px; font-weight: 600; }
-.modal-close { background: none; border: none; color: var(--text-secondary); cursor: pointer; font-size: 20px; line-height: 1; }
-.modal-close:hover { color: var(--text-primary); }
+.modal-close { background: none; border: none; color: #fff; cursor: pointer; font-size: 24px; line-height: 1; opacity: 0.8; transition: opacity 0.2s; }
+.modal-close:hover { opacity: 1; color: #fff; }
 .modal-footer { display: flex; gap: 10px; justify-content: flex-end; margin-top: 24px; }
 .modal-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
 .modal-grid .full { grid-column: 1/-1; }
@@ -137,6 +143,16 @@ tbody tr:hover { background: var(--bg-hover); }
 .page-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 28px; }
 .page-header h2 { font-size: 22px; font-weight: 700; }
 .page-header p  { color: var(--text-secondary); font-size: 13px; margin-top: 2px; }
+
+/* Ensure icons are bright in dark mode */
+svg { vertical-align: middle; stroke: currentColor; transition: color 0.2s, stroke 0.2s; }
+:root:not(.light-mode) svg {
+  color: #ffffff !important;
+  opacity: 1 !important;
+}
+:root:not(.light-mode) .text-danger svg {
+  color: #ff4d4d !important; /* Brighter red for dark mode */
+}
 
 /* ── Animations ── */
 @keyframes fadeIn  { from { opacity:0; } to { opacity:1; } }
