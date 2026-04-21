@@ -23,13 +23,13 @@ export class CommandeService {
       dateCom: c.dateCom,
       statut: c.statut,
       modePaiement: c.modePaiement,
-      idClt: c.idClt,
-      total: c.total,
+      idClt: Number(c.idClt),
+      total: Number(c.total),
       lCommandes: c.lCommandes?.map(l => ({
-        idArt: l.idArt,
-        quantite: l.quantite,
-        prixAchat: l.prixAchat,
-        remise: l.remise || 0
+        idArt: Number(l.idArt),
+        quantite: Number(l.quantite),
+        prixAchat: Number(l.prixAchat),
+        remise: Number(l.remise || 0)
       })) || []
     };
     return this.http.post<Commande>(this.url, payload); 
@@ -37,18 +37,18 @@ export class CommandeService {
 
   update(c: Commande): Observable<void> { 
     const payload = {
-      idCom: c.idCom,
+      idCom: Number(c.idCom),
       dateCom: c.dateCom,
       statut: c.statut,
       modePaiement: c.modePaiement,
-      idClt: c.idClt,
-      total: c.total,
+      idClt: Number(c.idClt),
+      total: Number(c.total),
       lCommandes: c.lCommandes?.map(l => ({
-        idCom: c.idCom,
-        idArt: l.idArt,
-        quantite: l.quantite,
-        prixAchat: l.prixAchat,
-        remise: l.remise || 0
+        idCom: Number(c.idCom),
+        idArt: Number(l.idArt),
+        quantite: Number(l.quantite),
+        prixAchat: Number(l.prixAchat),
+        remise: Number(l.remise || 0)
       })) || []
     };
     return this.http.put<void>(`${this.url}/${c.idCom}`, payload); 
