@@ -1,0 +1,259 @@
+:host {
+    --primary-color: #007bff;
+    --bg-light: #f8f9fa;
+    --ai-bubble: #ffffff;
+    --user-bubble: #007bff;
+    --text-dark: #2d3436;
+}
+
+/* Launcher modernisé */
+.chat-launcher {
+    position: fixed;
+    bottom: 25px;
+    right: 25px;
+    width: 60px;
+    height: 60px;
+    border-radius: 20px;
+    /* Style arrondi moderne (Squircle) */
+    background: var(--primary-color);
+    color: white;
+    border: none;
+    cursor: pointer;
+    box-shadow: 0 8px 24px rgba(0, 123, 255, 0.3);
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    z-index: 10001;
+}
+
+.chat-launcher:hover {
+    transform: scale(1.1);
+}
+
+.chat-launcher.active {
+    transform: rotate(90deg);
+    background: #dc0d1b;
+}
+
+/* Container style "Card" */
+.chat-container {
+    position: fixed;
+    bottom: 90px;
+    right: 25px;
+    width: 380px;
+    height: 600px;
+    max-height: 80vh;
+    background: var(--bg-light);
+    border-radius: 24px;
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    z-index: 10000;
+    animation: slideIn 0.3s ease-out;
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Header élégant */
+.chat-header {
+    background: white;
+    padding: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.header-info {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+}
+
+.title-container h1 {
+    font-size: 16px;
+    margin: 0;
+    color: var(--text-dark);
+}
+
+/* Alignement du titre et du bouton vert */
+.title-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    /* Espace entre le texte et le bouton */
+}
+
+.title-container h1 {
+    font-size: 16px;
+    margin: 0;
+    color: var(--text-dark);
+    font-weight: 600;
+}
+
+/* Style du bouton vert */
+.btn-green-status {
+    background-color: #2ecc71;
+    /* Vert émeraude */
+    color: white;
+    border: none;
+    padding: 2px 10px;
+    border-radius: 20px;
+    font-size: 10px;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    cursor: default;
+    /* Si c'est juste un indicateur */
+    box-shadow: 0 2px 4px rgba(46, 204, 113, 0.3);
+    transition: transform 0.2s;
+}
+
+/* Optionnel : petit effet au survol si c'est un bouton cliquable */
+.btn-green-status:hover {
+    transform: scale(1.05);
+    background-color: #27ae60;
+}
+
+.subtitle {
+    font-size: 12px;
+    margin: 0;
+    color: #0cb7f5;
+}
+
+/* Bulles de messages améliorées */
+.messages-viewport {
+    flex: 1;
+    padding: 20px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+
+
+.message.user {
+    align-self: flex-end;
+    flex-direction: row-reverse;
+}
+
+.bubble {
+    padding: 12px 16px;
+    border-radius: 18px;
+    font-size: 14px;
+    position: relative;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.02);
+}
+
+.ai .bubble {
+    background: white;
+    color: #000000;
+    /* Force une couleur sombre pour la visibilité */
+    border-bottom-left-radius: 4px;
+    border: 1px solid rgba(0, 0, 0, 0.05);
+    /* Optionnel : pour mieux voir la bulle */
+}
+
+.message-text {
+    color: #0f1114;
+    /* Assure-toi que le texte principal est noir */
+    margin-bottom: 8px;
+}
+
+.user .bubble {
+    background: var(--primary-color);
+    color: white;
+    border-bottom-right-radius: 4px;
+}
+
+.time {
+    font-size: 10px;
+    display: block;
+    margin-top: 4px;
+    opacity: 0.6;
+}
+
+/* Zone d'input "Floating" */
+.input-area {
+    padding: 15px 20px;
+    background: white;
+}
+
+.input-wrapper {
+    background: #f1f3f5;
+    padding: 8px 8px 8px 16px;
+    border-radius: 25px;
+    display: flex;
+    align-items: center;
+}
+
+input {
+    border: none;
+    background: transparent;
+    flex: 1;
+    outline: none;
+    font-size: 14px;
+}
+
+.send-btn {
+    background: var(--primary-color);
+    color: white;
+    border: none;
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Style pour forcer la visibilité du tableau sans avoir besoin du curseur */
+.data-table-container {
+    margin-top: 10px;
+    background: #ffffff;
+    /* Fond blanc pur */
+    border: 1px solid #dee2e6;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.data-table {
+    width: 100%;
+    border-collapse: collapse;
+    color: #2d3436 !important;
+    /* Texte sombre FORCÉ */
+}
+
+.data-table th {
+    background-color: #2d3436;
+    /* Fond sombre pour l'entête */
+    color: #ffffff !important;
+    /* Texte blanc pour l'entête */
+    padding: 8px;
+    text-transform: uppercase;
+    font-size: 11px;
+}
+
+.data-table td {
+    padding: 8px;
+    border-bottom: 1px solid #f1f3f5;
+    color: #2d3436 !important;
+    /* Texte sombre FORCÉ sur les lignes */
+    background: transparent;
+}
+
+/* Supprime ou modifie l'effet de hover qui changeait peut-être la couleur */
+.data-table tr:hover {
+    background-color: #f8f9fa;
+}

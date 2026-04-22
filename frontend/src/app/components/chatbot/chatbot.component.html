@@ -1,0 +1,64 @@
+<button class="chat-launcher" [class.active]="isChatVisible" (click)="toggleChat()">
+    <span class="icon">{{ isChatVisible ? '✕' : '💬' }}</span>
+</button>
+
+<main class="chat-container" *ngIf="isChatVisible">
+    <header class="chat-header">
+        <div class="header-info">
+            <div class="status-wrapper">
+                <div class="status-dot" [class.loading]="isLoading"></div>
+            </div>
+            <div class="title-container">
+                <div class="title-row">
+                    <h1>ERPMs Assistant</h1>
+                    <button class="btn-green-status">Actif</button>
+                </div>
+                <p class="subtitle">{{ isLoading ? 'L\'IA réfléchit...' : 'Prêt à vous aider' }}</p>
+            </div>
+        </div>
+    </header>
+
+    <div class="messages-viewport" #scrollMe>
+        <div *ngFor="let msg of messages" [ngClass]="msg.isUser ? 'message user' : 'message ai'">
+            <div class="avatar" *ngIf="!msg.isUser">🤖</div>
+            <div class="bubble">
+                <div class="message-text">{{ msg.text }}</div>
+
+                <div *ngIf="msg.data && msg.data.length > 0" class="data-table-container">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th *ngFor="let key of getKeys(msg.data[0])">{{ key }}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let row of msg.data">
+                                <td *ngFor="let key of getKeys(row)">{{ row[key] }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <span class="time">maintenant</span>
+            </div>
+        </div>
+
+        <div *ngIf="isLoading" class="message ai">
+            <div class="avatar">🤖</div>
+            <div class="bubble loading-dots">
+                <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+            </div>
+        </div>
+    </div>
+
+    <footer class="input-area">
+        <div class="input-wrapper">
+            <input [(ngModel)]="userInput" (keyup.enter)="sendMessage()" placeholder="Posez votre question...">
+            <button class="send-btn" (click)="sendMessage()" [disabled]="!userInput.trim() || isLoading">
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor">
+                    <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"></path>
+                </svg>
+            </button>
+        </div>
+    </footer>
+</main>

@@ -1,5 +1,6 @@
 using DAL;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Serilog;
 using Service_ERP;
@@ -27,6 +28,8 @@ builder.Services.Configure<DbContextSettings>(builder.Configuration);
 // Ajouter les services DAL_ERP / Service_ERP
 builder.Services.AddService(builder.Configuration);
 builder.Services.AddHttpClient();
+builder.Services.AddDbContext<Core.Entities.ERPDbContext>(options =>
+    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 // JWT
 var jwtSection = builder.Configuration.GetSection("Jwt");

@@ -76,6 +76,22 @@ services:
     networks:
       - backend
 
+
+  aiservice:
+    build:
+      context: .
+      dockerfile: ./AIService/Dockerfile # Vérifie bien le chemin vers ton Dockerfile
+    container_name: aiservice
+    restart: always
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      Gemini__ApiKey: "TON_API_KEY_ICI" # Optionnel : tu peux passer la clé ici
+    ports:
+      - "5091:8080"
+    networks:
+      - backend
+
+
   apigateway:
     build: 
       context: .
@@ -86,13 +102,15 @@ services:
       ASPNETCORE_ENVIRONMENT: Development
       ReverseProxy__Clusters__authCluster__Destinations__d1__Address: http://authapi:8080/
       ReverseProxy__Clusters__usersCluster__Destinations__d1__Address: http://userapi:8080/
-      ReverseProxy__Clusters__erpCluster__Destinations__d1__Address: http://erpapi:8080/
+      ReverseProxy__Clusters__erpCluster__Destinations__d1__Address: http://erpapi:8080/ 
+      ReverseProxy__Clusters__aiCluster__Destinations__d1__Address: http://aiservice:8080/
     ports:
       - "5000:8080"
     depends_on:
       - authapi
       - userapi
-      - erpapi
+      - erpapi 
+      - aiservice
     networks:
       - backend
 
