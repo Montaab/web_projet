@@ -9,14 +9,16 @@ export const routes: Routes = [
     loadComponent: () => import('./shared/layout/main-layout/main-layout.component').then(m => m.MainLayoutComponent),
     canActivate: [authGuard],
     children: [
-      { path: 'dashboard',     loadComponent: () => import('./features/dashboard/dashboard.component').then(m => m.DashboardComponent) },
-      { path: 'articles',      loadComponent: () => import('./features/articles/articles.component').then(m => m.ArticlesComponent) },
-      { path: 'categories',    loadComponent: () => import('./features/categories/categories.component').then(m => m.CategoriesComponent) },
-      { path: 'clients',       loadComponent: () => import('./features/clients/clients.component').then(m => m.ClientsComponent) },
-      { path: 'fournisseurs',  loadComponent: () => import('./features/fournisseurs/fournisseurs.component').then(m => m.FournisseursComponent) },
-      { path: 'commandes',     loadComponent: () => import('./features/commandes/commandes.component').then(m => m.CommandesComponent) },
-      { path: 'factures',      loadComponent: () => import('./features/factures/factures.component').then(m => m.FacturesComponent) },
-      { path: 'utilisateurs',  loadComponent: () => import('./features/users/users.component').then(m => m.UsersComponent) },
+      { path: 'dashboard', loadComponent: () => import('./features/dashboard/dashboard.component').then(m => m.DashboardComponent) },
+      { path: 'chatbot', loadComponent: () => import('./components/chatbot/chatbot.component').then(m => m.ChatbotComponent) },
+      { path: 'articles', loadComponent: () => import('./features/articles/articles.component').then(m => m.ArticlesComponent) },
+      { path: 'categories', loadComponent: () => import('./features/categories/categories.component').then(m => m.CategoriesComponent) },
+      { path: 'clients', loadComponent: () => import('./features/clients/clients.component').then(m => m.ClientsComponent) },
+      { path: 'fournisseurs', loadComponent: () => import('./features/fournisseurs/fournisseurs.component').then(m => m.FournisseursComponent) },
+      { path: 'commandes', loadComponent: () => import('./features/commandes/commandes.component').then(m => m.CommandesComponent) },
+      { path: 'factures', loadComponent: () => import('./features/factures/factures.component').then(m => m.FacturesComponent) },
+      { path: 'utilisateurs', loadComponent: () => import('./features/users/users.component').then(m => m.UsersComponent) },
+
     ]
   },
   { path: '**', redirectTo: 'login' }
