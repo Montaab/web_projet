@@ -5,7 +5,8 @@ builder.Services
     .LoadFromConfig(builder.Configuration.GetSection("ReverseProxy"));
 
 var app = builder.Build();
-
+app.MapGet("/", () => Results.Ok("Gateway is running"));
 app.MapReverseProxy();
+
 
 app.Run();
