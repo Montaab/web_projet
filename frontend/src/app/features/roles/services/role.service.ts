@@ -8,7 +8,7 @@ import { Role } from '../../../core/models/role.model';
   providedIn: 'root'
 })
 export class RoleService {
-  private apiUrl = `${environment.gateway}/Role`;
+  private apiUrl = `${environment.gateway}/User/Role`;
 
   constructor(private http: HttpClient) {}
 

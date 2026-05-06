@@ -7,7 +7,8 @@ namespace ERP.Controllers
 {
     [ApiController]
     [Route("ERP/[controller]")]
-    [Authorize]
+    [Authorize(Roles = "Administrateur")]
+
     public class PanierController : ControllerBase
     {
         private readonly IPanierService _service;

@@ -11,7 +11,8 @@ namespace ERP.Controllers
     /// </summary>
     [ApiController]
     [Route("ERP/[controller]")]
-    [Authorize]
+    [Authorize(Roles = "Administrateur,Gestionnaire")]
+
     public class LFournisseurController : ControllerBase
     {
         private readonly ILFournisseurService _service;

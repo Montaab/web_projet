@@ -11,7 +11,8 @@ namespace ERP.Controllers
     /// </summary>
     [ApiController]
     [Route("ERP/[controller]")]
-    [Authorize]
+    [Authorize(Roles = "Administrateur,Gestionnaire")]
+
     public class LCommandeController : ControllerBase
     {
         private readonly ILCommandeService _service;
