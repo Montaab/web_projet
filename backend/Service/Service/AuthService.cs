@@ -8,7 +8,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using Npgsql;
-using NuGet.Protocol.Plugins;
 using Service.DTO;
 using Service.IService;
 using Service.Models;

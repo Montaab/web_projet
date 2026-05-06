@@ -1,18 +1,21 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
+using System.Data.Common;
+using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Json;
 using System.Text.Json;
 using System.Text.RegularExpressions;
-using System.Linq;
-using System.Data.Common;
-using Microsoft.EntityFrameworkCore;
-using System.Collections.Generic;
 
 namespace AIService.Controllers
 {
+    
 
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class ChatController : ControllerBase
     {
         private readonly IConfiguration _configuration;
