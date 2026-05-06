@@ -1,3 +1,2 @@
-<router-outlet><router-outlet />
-
-  <app-chatbot></app-chatbot>
+<router-outlet></router-outlet>
+<app-chatbot *ngIf="authService.isLoggedIn()"></app-chatbot>
