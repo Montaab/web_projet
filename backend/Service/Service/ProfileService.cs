@@ -1,5 +1,6 @@
 using AutoMapper;
 using Core.Entities;
+using ProfileEntity = Core.Entities.Profile;
 using DAL.IRepository;
 using Microsoft.EntityFrameworkCore;
 using Service.DTO;
@@ -11,11 +12,11 @@ namespace Service.Service
 {
     public class ProfileService : IProfileService
     {
-        private readonly IRepositoryAsync<Profile> _repository;
+        private readonly IRepositoryAsync<ProfileEntity> _repository;
         private readonly IMapper _mapper;
 
         public ProfileService(
-            IRepositoryAsync<Profile> repository,
+            IRepositoryAsync<ProfileEntity> repository,
             IMapper mapper)
         {
             _repository = repository;
@@ -52,7 +53,7 @@ namespace Service.Service
         // =========================
         public async Task<ProfileDto> AddAsync(ProfileDto dto)
         {
-            var entity = _mapper.Map<Profile>(dto);
+            var entity = _mapper.Map<ProfileEntity>(dto);
             await _repository.Add(entity);
 
             // Recharger l'entité avec les relations
@@ -69,7 +70,7 @@ namespace Service.Service
         // =========================
         public async Task UpdateAsync(ProfileDto dto)
         {
-            var entity = _mapper.Map<Profile>(dto);
+            var entity = _mapper.Map<ProfileEntity>(dto);
             await _repository.Update(entity);
         }
 
