@@ -6,7 +6,7 @@ import { Categorie } from '../../../core/models/categorie.model';
 
 @Injectable({ providedIn: 'root' })
 export class CategorieService {
-  private url = `${environment.erpApi}/Categorie`;
+  private url = `${environment.gateway}/ERP/Categorie`;
 
   constructor(private http: HttpClient) {}
 

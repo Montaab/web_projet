@@ -8,7 +8,7 @@ import { LFournisseur } from '../../../core/models/lfournisseur.model';
   providedIn: 'root'
 })
 export class LFournisseurService {
-  private apiUrl = `${environment.erpApi}/LFournisseur`;
+  private apiUrl = `${environment.gateway}/ERP/LFournisseur`;
 
   constructor(private http: HttpClient) {}
 

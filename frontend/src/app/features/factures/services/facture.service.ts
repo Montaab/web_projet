@@ -6,7 +6,7 @@ import { Facture } from '../../../core/models/facture.model';
 
 @Injectable({ providedIn: 'root' })
 export class FactureService {
-  private url = `${environment.erpApi}/Facture`;
+  private url = `${environment.gateway}/ERP/Facture`;
 
   constructor(private http: HttpClient) {}
 
