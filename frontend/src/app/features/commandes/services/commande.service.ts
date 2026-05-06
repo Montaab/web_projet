@@ -6,7 +6,7 @@ import { Commande } from '../../../core/models/commande.model';
 
 @Injectable({ providedIn: 'root' })
 export class CommandeService {
-  private url = `${environment.erpApi}/Commande`;
+  private url = `${environment.gateway}/ERP/Commande`;
 
   constructor(private http: HttpClient) {}
 

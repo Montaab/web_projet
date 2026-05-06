@@ -13,7 +13,7 @@ export class AuthService {
   constructor(private http: HttpClient, private router: Router) {}
 
   login(credentials: any): Observable<ResponseLogin> {
-    return this.http.post<ResponseLogin>(`${environment.userApi}/User/IsLogin`, credentials).pipe(
+    return this.http.post<ResponseLogin>(`${environment.gateway}/User/IsLogin`, credentials).pipe(
       tap(res => {
         if (res && res.accessToken) {
           localStorage.setItem(this.TOKEN_KEY, res.accessToken);

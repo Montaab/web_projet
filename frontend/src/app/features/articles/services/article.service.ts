@@ -6,7 +6,7 @@ import { Article } from '../../../core/models/article.model';
 
 @Injectable({ providedIn: 'root' })
 export class ArticleService {
-  private url = `${environment.erpApi}/Article`;
+  private url = `${environment.gateway}/ERP/Article`;
 
   constructor(private http: HttpClient) {}
 

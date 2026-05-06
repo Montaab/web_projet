@@ -8,7 +8,7 @@ import { LCommande } from '../../../core/models/lcommande.model';
   providedIn: 'root'
 })
 export class LCommandeService {
-  private apiUrl = `${environment.erpApi}/LCommande`;
+  private apiUrl = `${environment.gateway}/ERP/LCommande`;
 
   constructor(private http: HttpClient) {}
 

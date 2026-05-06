@@ -6,7 +6,7 @@ import { Souscategorie } from '../../../core/models/categorie.model';
 
 @Injectable({ providedIn: 'root' })
 export class SouscategorieService {
-  private url = `${environment.erpApi}/Souscategorie`;
+  private url = `${environment.gateway}/ERP/Souscategorie`;
 
   constructor(private http: HttpClient) {}
 
