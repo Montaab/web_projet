@@ -86,11 +86,14 @@
         }
         <div class="form-group">
           <label>Rôle</label>
-          <select class="form-control" [(ngModel)]="currentUser.role">
-            <option value="Admin">Administrateur</option>
-            <option value="Manager">Manager</option>
-            <option value="User">Utilisateur</option>
+          <select class="form-control" [(ngModel)]="currentUser.idrole">
+            <option *ngFor="let role of roles" [value]="role.idrole">
+              {{ role.nom }}
+            </option>
           </select>
+          <div *ngIf="roles.length === 0" class="text-muted" style="margin-top: 8px; font-size: 0.9rem;">
+            Aucun rôle disponible. Vérifie la connexion avec le backend.
+          </div>
         </div>
         <div class="form-group form-check">
           <label>

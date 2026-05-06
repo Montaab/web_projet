@@ -3,6 +3,9 @@ export interface User {
   username: string;
   email: string;
   password?: string;
-  role: string;
+  telephone?: string;
+  idrole?: number;
+  role?: string;
+  idroleNavigation?: { nom: string };
   isActive: boolean;
 }

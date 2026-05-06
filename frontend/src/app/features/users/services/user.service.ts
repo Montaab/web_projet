@@ -12,6 +12,23 @@ export class UserService {
 
   constructor(private http: HttpClient) {}
 
+  private toDto(user: User): any {
+    const dto: any = {
+      Iduser: user.idUser,
+      Nom: user.username,
+      Username: user.username,
+      Email: user.email,
+      Telephone: user.telephone ?? '',
+      Idrole: user.idrole
+    };
+
+    if (user.password) {
+      dto.Motpass = user.password;
+    }
+
+    return dto;
+  }
+
   getAll(): Observable<User[]> {
     return this.http.get<User[]>(`${this.apiUrl}`);
   }
@@ -21,14 +38,14 @@ export class UserService {
   }
 
   create(user: User): Observable<User> {
-    return this.http.post<User>(`${this.apiUrl}`, user);
+    return this.http.post<User>(`${this.apiUrl}`, this.toDto(user));
   }
 
   update(id: number, user: User): Observable<User> {
-    return this.http.put<User>(`${this.apiUrl}/${id}`, user);
+    return this.http.put<User>(`${this.apiUrl}/${id}`, this.toDto(user));
   }
 
   delete(id: number): Observable<any> {
-    return this.http.delete(`${this.apiUrl}/${id}`); // Assuming standard REST for delete
+    return this.http.delete(`${this.apiUrl}/${id}`);
   }
 }
