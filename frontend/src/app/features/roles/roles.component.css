@@ -1,0 +1,41 @@
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.role-name {
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.role-desc {
+  font-size: 13px;
+  color: var(--text-secondary);
+}
+
+.actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.btn-icon {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 18px;
+  padding: 8px;
+  border-radius: var(--radius-sm);
+  transition: background var(--transition);
+}
+
+.btn-icon:hover {
+  background: var(--bg-hover);
+}
+
+.text-danger:hover {
+  background: rgba(239, 68, 68, 0.1);
+}
