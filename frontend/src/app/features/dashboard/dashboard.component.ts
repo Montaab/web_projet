@@ -23,6 +23,7 @@ export class DashboardComponent implements OnInit {
   };
   loading = true;
   recentCommandes: any[] = [];
+  String = String; // Make String available in template
 
   constructor(
     private articleService: ArticleService,
