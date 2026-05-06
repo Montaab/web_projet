@@ -6,7 +6,7 @@ using Service_ERP.IService;
 namespace ERP.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("ERP/[controller]")]
     [Authorize]
     public class FournisseurController : ControllerBase
     {
