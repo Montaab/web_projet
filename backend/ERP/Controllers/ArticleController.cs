@@ -7,7 +7,7 @@ namespace ERP.Controllers
 {
     [ApiController]
     [Route("ERP/[controller]")]
-
+    [Authorize(Roles = "Administrateur,Gestionnaire")]
     public class ArticleController : ControllerBase
     {
         private readonly IArticleService _service;

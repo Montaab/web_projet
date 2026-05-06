@@ -48,7 +48,7 @@ export class UsersComponent implements OnInit {
       username: '',
       email: '',
       password: '',
-      role: 'User',
+      role: '',
       isActive: true
     };
     this.showModal = true;

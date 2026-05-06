@@ -7,7 +7,8 @@ namespace ERP.Controllers
 {
     [ApiController]
     [Route("ERP/[controller]")]
-    [Authorize]
+    [Authorize(Roles = "Administrateur,Comptable")]
+
     public class FactureController : ControllerBase
     {
         private readonly IFactureService _service;

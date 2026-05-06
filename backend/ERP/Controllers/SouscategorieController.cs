@@ -7,7 +7,8 @@ namespace ERP.Controllers
 {
     [ApiController]
     [Route("ERP/[controller]")]
-    [Authorize]
+    [Authorize(Roles = "Administrateur,Gestionnaire")]
+
     public class SouscategorieController : ControllerBase
     {
         private readonly ISouscategorieService _service;

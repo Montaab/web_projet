@@ -11,7 +11,8 @@ namespace ERP.Controllers
     /// </summary>
     [ApiController]
     [Route("ERP/[controller]")]
-    [Authorize]
+    [Authorize(Roles = "Administrateur")]
+
     public class LPanierController : ControllerBase
     {
         private readonly ILPanierService _service;

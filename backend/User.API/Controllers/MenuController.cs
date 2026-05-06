@@ -7,7 +7,7 @@ using Service.IService;
 namespace User.API.Controllers
 {
     [Produces("application/json")]
-    [Route("Menu")]
+    [Route("User/[controller]")]
     [EnableCors("CORSPolicy")]
     [ApiController]
     public class MenuController : ControllerBase

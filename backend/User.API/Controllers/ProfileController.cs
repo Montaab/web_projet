@@ -7,7 +7,7 @@ using Service.IService;
 namespace User.API.Controllers
 {
     [Produces("application/json")]
-    [Route("Profile")]
+    [Route("User/[controller]")]
     [EnableCors("CORSPolicy")]
     [ApiController]
     public class ProfileController : ControllerBase

@@ -15,7 +15,8 @@ namespace AIService.Controllers
 
     [Route("ERP/[controller]")]
     [ApiController]
-    [Authorize]
+    [Authorize(Roles = "Administrateur")]
+
     public class ChatController : ControllerBase
     {
         private readonly IConfiguration _configuration;
