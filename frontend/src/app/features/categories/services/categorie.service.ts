@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { environment } from '../../../environments/environment';
-import { Categorie } from '../models/categorie.model';
+import { environment } from '../../../../environments/environment';
+import { Categorie } from '../../../core/models/categorie.model';
 
 @Injectable({ providedIn: 'root' })
 export class CategorieService {

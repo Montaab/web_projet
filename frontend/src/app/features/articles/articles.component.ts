@@ -3,8 +3,8 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { Observable } from 'rxjs';
-import { ArticleService } from '../../core/services/article.service';
-import { SouscategorieService } from '../../core/services/souscategorie.service';
+import { ArticleService } from './services/article.service';
+import { SouscategorieService } from '../categories/services/souscategorie.service';
 import { Article } from '../../core/models/article.model';
 import { Souscategorie } from '../../core/models/categorie.model';
 

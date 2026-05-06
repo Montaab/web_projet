@@ -1,10 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
-import { ArticleService } from '../../core/services/article.service';
-import { ClientService } from '../../core/services/client.service';
-import { CommandeService } from '../../core/services/commande.service';
-import { FournisseurService } from '../../core/services/fournisseur.service';
+import { ArticleService } from '../articles/services/article.service';
+import { ClientService } from '../clients/services/client.service';
+import { CommandeService } from '../commandes/services/commande.service';
+import { FournisseurService } from '../fournisseurs/services/fournisseur.service';
 import { forkJoin } from 'rxjs';
 
 @Component({

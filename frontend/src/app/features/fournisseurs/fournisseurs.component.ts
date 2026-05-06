@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Observable } from 'rxjs';
-import { FournisseurService } from '../../core/services/fournisseur.service';
+import { FournisseurService } from './services/fournisseur.service';
 import { Fournisseur } from '../../core/models/fournisseur.model';
 import { LFournisseur } from '../../core/models/lfournisseur.model';
 

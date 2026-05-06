@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { environment } from '../../../environments/environment';
-import { Fournisseur } from '../models/fournisseur.model';
+import { environment } from '../../../../environments/environment';
+import { Fournisseur } from '../../../core/models/fournisseur.model';
 
 @Injectable({ providedIn: 'root' })
 export class FournisseurService {

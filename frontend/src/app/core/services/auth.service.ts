@@ -1,63 +1,63 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { Router } from '@angular/router';
-import { Observable, tap } from 'rxjs';
-import { environment } from '../../../environments/environment';
 import { ResponseLogin } from '../models/auth.model';
 
-@Injectable({ providedIn: 'root' })
+@Injectable({
+  providedIn: 'root'
+})
 export class AuthService {
-  private readonly TOKEN_KEY = 'erp_token';
-  private readonly USER_KEY  = 'erp_user';
+  private readonly TOKEN_KEY = 'access_token';
+  private readonly USER_KEY = 'current_user';
 
-  constructor(private http: HttpClient, private router: Router) {}
+  constructor() {}
 
-  login(credentials: any): Observable<ResponseLogin> {
-    return this.http.post<ResponseLogin>(`${environment.userApi}/User/IsLogin`, credentials).pipe(
-      tap(res => {
-        // Retour au camelCase comme confirmé par votre test
-        if (res && res.accessToken) {
-          localStorage.setItem(this.TOKEN_KEY, res.accessToken);
-          localStorage.setItem(this.USER_KEY, JSON.stringify(res));
-        }
-      })
-    );
+  /**
+   * Check if user is logged in
+   */
+  isLoggedIn(): boolean {
+    return !!this.getToken();
   }
 
-  logout(): void {
-    localStorage.removeItem(this.TOKEN_KEY);
-    localStorage.removeItem(this.USER_KEY);
-    this.router.navigate(['/login']);
-  }
-
+  /**
+   * Get stored authentication token
+   */
   getToken(): string | null {
     return localStorage.getItem(this.TOKEN_KEY);
   }
 
+  /**
+   * Set authentication token
+   */
+  setToken(token: string): void {
+    localStorage.setItem(this.TOKEN_KEY, token);
+  }
+
+  /**
+   * Get current logged in user
+   */
   getCurrentUser(): ResponseLogin | null {
-    const u = localStorage.getItem(this.USER_KEY);
-    return u ? JSON.parse(u) : null;
+    const user = localStorage.getItem(this.USER_KEY);
+    return user ? JSON.parse(user) : null;
   }
 
-  isLoggedIn(): boolean {
-  const token = this.getToken();
-  if (!token) return false;
-
-  try {
-    const payload = JSON.parse(atob(token.split('.')[1]));
-    const exp = payload.exp;
-
-    const now = Math.floor(Date.now() / 1000);
-
-    if (exp < now) {
-      this.logout(); // 🔥 supprime + redirect
-      return false;
-    }
-
-    return true;
-  } catch (e) {
-    this.logout(); // token invalide
-    return false;
+  /**
+   * Set current user
+   */
+  setCurrentUser(user: ResponseLogin): void {
+    localStorage.setItem(this.USER_KEY, JSON.stringify(user));
   }
-}
+
+  /**
+   * Logout user
+   */
+  logout(): void {
+    localStorage.removeItem(this.TOKEN_KEY);
+    localStorage.removeItem(this.USER_KEY);
+  }
+
+  /**
+   * Clear all auth data
+   */
+  clearAuth(): void {
+    this.logout();
+  }
 }

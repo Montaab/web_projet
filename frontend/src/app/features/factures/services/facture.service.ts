@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { environment } from '../../../environments/environment';
-import { Facture } from '../models/facture.model';
+import { environment } from '../../../../environments/environment';
+import { Facture } from '../../../core/models/facture.model';
 
 @Injectable({ providedIn: 'root' })
 export class FactureService {

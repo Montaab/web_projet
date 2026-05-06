@@ -1,10 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { FactureService } from '../../core/services/facture.service';
-import { CommandeService } from '../../core/services/commande.service';
-import { ClientService } from '../../core/services/client.service';
-import { ArticleService } from '../../core/services/article.service';
+import { FactureService } from './services/facture.service';
+import { CommandeService } from '../commandes/services/commande.service';
+import { ClientService } from '../clients/services/client.service';
+import { ArticleService } from '../articles/services/article.service';
 import { Facture } from '../../core/models/facture.model';
 import { Commande } from '../../core/models/commande.model';
 import { Client } from '../../core/models/client.model';

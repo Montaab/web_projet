@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Observable } from 'rxjs';
-import { CategorieService } from '../../core/services/categorie.service';
+import { CategorieService } from './services/categorie.service';
 import { Categorie } from '../../core/models/categorie.model';
 
 @Component({
