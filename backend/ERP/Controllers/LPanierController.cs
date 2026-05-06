@@ -10,7 +10,7 @@ namespace ERP.Controllers
     /// Clé composite : IdPan + IdArt
     /// </summary>
     [ApiController]
-    [Route("[controller]")]
+    [Route("ERP/[controller]")]
     [Authorize]
     public class LPanierController : ControllerBase
     {

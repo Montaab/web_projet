@@ -13,7 +13,7 @@ namespace AIService.Controllers
 {
     
 
-    [Route("api/[controller]")]
+    [Route("ERP/[controller]")]
     [ApiController]
     [Authorize]
     public class ChatController : ControllerBase
