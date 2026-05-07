@@ -10,6 +10,7 @@ namespace User.API.Controllers
     [Route("User/[controller]")]
     [EnableCors("CORSPolicy")]
     [ApiController]
+    [Authorize]
     public class MenuController : ControllerBase
     {
         private readonly IMenuService _service;
@@ -25,7 +26,6 @@ namespace User.API.Controllers
         // GET ALL MENUS
         // =========================
         [HttpGet]
-        [Authorize]
         public async Task<ActionResult<IEnumerable<MenuDto>>> GetAll()
         {
             try
@@ -41,10 +41,32 @@ namespace User.API.Controllers
         }
 
         // =========================
+        // GET MENUS BY ROLE ID
+        // =========================
+        [HttpGet("ByRole/{roleId}")]
+        public async Task<ActionResult<IEnumerable<MenuDto>>> GetByRole(int roleId)
+        {
+            try
+            {
+                var menus = await _service.GetByRoleIdAsync(roleId);
+                return Ok(menus);
+            }
+            catch (Exception ex)
+            {
+                _logger.Error($"Erreur GetByRole Menus (roleId={roleId}): {ex}");
+                return StatusCode(500, new
+                {
+                    Message = ex.Message,
+                    Detail = ex.InnerException?.Message
+                });
+            }
+        }
+
+        // =========================
         // GET MENU BY ID
         // =========================
         [HttpGet("{id}")]
-        [Authorize]
+        [Authorize(Roles = "Administrateur")]
         public async Task<ActionResult<MenuDto>> GetById(int id)
         {
             try
@@ -67,7 +89,7 @@ namespace User.API.Controllers
         // CREATE MENU
         // =========================
         [HttpPost]
-        [Authorize]
+        [Authorize(Roles = "Administrateur")]
         public async Task<ActionResult<MenuDto>> Create([FromBody] MenuDto menuDto)
         {
             try
@@ -89,7 +111,7 @@ namespace User.API.Controllers
         // UPDATE MENU
         // =========================
         [HttpPut("{id}")]
-        [Authorize]
+        [Authorize(Roles = "Administrateur")]
         public async Task<IActionResult> Update(int id, [FromBody] MenuDto menuDto)
         {
             try
@@ -118,7 +140,7 @@ namespace User.API.Controllers
         // DELETE MENU
         // =========================
         [HttpDelete("{id}")]
-        [Authorize]
+        [Authorize(Roles = "Administrateur")]
         public async Task<IActionResult> Delete(int id)
         {
             try

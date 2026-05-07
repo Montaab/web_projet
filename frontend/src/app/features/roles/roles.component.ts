@@ -3,6 +3,8 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RoleService } from './services/role.service';
 import { Role } from '../../core/models/role.model';
+import { Menu } from '../../core/models/menu.model';
+import { MenuService } from '../../core/services/menu.service';
 
 @Component({
   selector: 'app-roles',
@@ -13,22 +15,31 @@ import { Role } from '../../core/models/role.model';
 })
 export class RolesComponent implements OnInit {
   roles: Role[] = [];
+  allMenus: Menu[] = [];
   loading = true;
   showModal = false;
   editMode = false;
 
   currentRole: Role = {
     nom: '',
-    description: ''
+    description: '',
+    idmenus: []
   };
+
+  // IDs des menus sélectionnés pour le rôle en cours d'édition
+  selectedMenuIds: Set<number> = new Set();
 
   showDeleteModal = false;
   itemToDelete: number | undefined = undefined;
 
-  constructor(private roleService: RoleService) {}
+  constructor(
+    private roleService: RoleService,
+    private menuService: MenuService
+  ) {}
 
   ngOnInit(): void {
     this.loadData();
+    this.loadMenus();
   }
 
   loadData(): void {
@@ -44,16 +55,56 @@ export class RolesComponent implements OnInit {
     });
   }
 
+  loadMenus(): void {
+    this.menuService.getAll().subscribe({
+      next: (menus) => {
+        this.allMenus = menus;
+      },
+      error: (err) => {
+        console.error('Erreur chargement menus:', err);
+      }
+    });
+  }
+
   openAdd(): void {
     this.editMode = false;
-    this.currentRole = { nom: '', description: '' };
+    this.currentRole = { nom: '', description: '', idmenus: [] };
+    this.selectedMenuIds = new Set();
     this.showModal = true;
   }
 
   openEdit(role: Role): void {
     this.editMode = true;
     this.currentRole = { ...role };
+    // Initialiser les menus sélectionnés à partir du rôle
+    this.selectedMenuIds = new Set(
+      (role.idmenus || []).map(m => m.idmenu)
+    );
     this.showModal = true;
+  }
+
+  toggleMenu(menuId: number): void {
+    if (this.selectedMenuIds.has(menuId)) {
+      this.selectedMenuIds.delete(menuId);
+    } else {
+      this.selectedMenuIds.add(menuId);
+    }
+  }
+
+  isMenuSelected(menuId: number): boolean {
+    return this.selectedMenuIds.has(menuId);
+  }
+
+  selectAllMenus(): void {
+    this.allMenus.forEach(m => this.selectedMenuIds.add(m.idmenu));
+  }
+
+  deselectAllMenus(): void {
+    this.selectedMenuIds.clear();
+  }
+
+  getMenuCount(role: Role): number {
+    return role.idmenus?.length || 0;
   }
 
   save(): void {
@@ -61,6 +112,11 @@ export class RolesComponent implements OnInit {
       alert('Le nom du rôle est obligatoire.');
       return;
     }
+
+    // Construire la liste des menus sélectionnés (on envoie les objets Menu au backend)
+    this.currentRole.idmenus = this.allMenus.filter(m =>
+      this.selectedMenuIds.has(m.idmenu)
+    );
 
     const request: import('rxjs').Observable<Role | void> = this.editMode && this.currentRole.idrole
       ? this.roleService.update(this.currentRole.idrole, this.currentRole)

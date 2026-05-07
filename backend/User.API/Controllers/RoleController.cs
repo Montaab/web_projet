@@ -10,6 +10,7 @@ namespace User.API.Controllers
     [Route("User/[controller]")]
     [EnableCors("CORSPolicy")]
     [ApiController]
+    [Authorize(Roles = "Administrateur")]
     public class RoleController : ControllerBase
     {
         private readonly IRoleService _service;
@@ -81,7 +82,11 @@ namespace User.API.Controllers
             catch (Exception ex)
             {
                 _logger.Error($"Erreur Create Role: {ex}");
-                return StatusCode(500, new { Message = "Erreur serveur" });
+                return StatusCode(500, new
+                {
+                    Message = ex.Message,
+                    Detail = ex.InnerException?.Message
+                });
             }
         }
 
@@ -133,7 +138,11 @@ namespace User.API.Controllers
             catch (Exception ex)
             {
                 _logger.Error($"Erreur Delete Role {id}: {ex}");
-                return StatusCode(500, new { Message = "Erreur serveur" });
+                return StatusCode(500, new
+                {
+                    Message = ex.Message,
+                    Detail = ex.InnerException?.Message
+                });
             }
         }
     }

@@ -10,6 +10,7 @@ namespace User.API.Controllers
     [Route("User/[controller]")]
     [EnableCors("CORSPolicy")]
     [ApiController]
+    [Authorize(Roles = "Administrateur")]
     public class ProfileController : ControllerBase
     {
         private readonly IProfileService _service;

@@ -86,5 +86,20 @@ namespace Service.Service
         {
             await _repository.Delete(keyValues);
         }
+
+        // =========================
+        // GET BY ROLE ID
+        // =========================
+        public async Task<IEnumerable<MenuDto>> GetByRoleIdAsync(int roleId)
+        {
+            var entities = await _repository.GetMuliple(
+                predicate: m => m.Idroles.Any(r => r.Idrole == roleId),
+                include: q => q.Include(m => m.Parent)
+                               .Include(m => m.InverseParent)
+                               .Include(m => m.Idroles)
+            );
+
+            return _mapper.Map<IEnumerable<MenuDto>>(entities);
+        }
     }
 }

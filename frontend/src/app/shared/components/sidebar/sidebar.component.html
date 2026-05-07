@@ -33,7 +33,7 @@
       </div>
       <div class="user-details">
         <span class="user-name">{{ currentUser?.nom || 'Utilisateur' }}</span>
-        <span class="user-role">Administrateur</span>
+        <span class="user-role">{{ roleName || 'Utilisateur' }}</span>
       </div>
     </div>
     <button (click)="confirmLogout()" class="btn-logout" title="Déconnexion">

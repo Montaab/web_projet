@@ -14,5 +14,10 @@ namespace Service.IService
         Task<MenuDto> AddAsync(MenuDto dto);
         Task UpdateAsync(MenuDto dto);
         Task DeleteAsync(params object[] keyValues);
+
+        // =========================
+        // BY ROLE
+        // =========================
+        Task<IEnumerable<MenuDto>> GetByRoleIdAsync(int roleId);
     }
 }

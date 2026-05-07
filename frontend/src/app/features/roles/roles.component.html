@@ -19,6 +19,7 @@
         <tr>
           <th>Nom du rôle</th>
           <th>Description</th>
+          <th>Menus autorisés</th>
           <th style="text-align: right;">Actions</th>
         </tr>
       </thead>
@@ -32,6 +33,17 @@
               </div>
             </td>
             <td>{{ role.description || '—' }}</td>
+            <td>
+              <div class="menu-badges">
+                @if (getMenuCount(role) > 0) {
+                  @for (menu of role.idmenus; track menu.idmenu) {
+                    <span class="menu-badge">{{ menu.titre }}</span>
+                  }
+                } @else {
+                  <span class="text-muted">Aucun menu</span>
+                }
+              </div>
+            </td>
             <td style="text-align: right;">
               <div class="actions">
                 <button class="btn-icon" (click)="openEdit(role)">
@@ -45,7 +57,7 @@
           </tr>
         } @empty {
           <tr>
-            <td colspan="3" style="text-align: center; padding: 40px; color: var(--text-secondary);">
+            <td colspan="4" style="text-align: center; padding: 40px; color: var(--text-secondary);">
               Aucun rôle trouvé.
             </td>
           </tr>
@@ -57,7 +69,7 @@
 
 @if (showModal) {
   <div class="modal-overlay">
-    <div class="modal-box">
+    <div class="modal-box modal-lg">
       <div class="modal-header">
         <h3>{{ editMode ? 'Modifier' : 'Ajouter' }} un rôle</h3>
         <button class="modal-close" (click)="showModal = false">×</button>
@@ -71,6 +83,42 @@
         <div class="form-group full">
           <label>Description</label>
           <textarea class="form-control" rows="3" [(ngModel)]="currentRole.description"></textarea>
+        </div>
+
+        <!-- Section d'assignation des menus -->
+        <div class="form-group full">
+          <div class="menus-header">
+            <label>Menus autorisés</label>
+            <div class="menus-actions">
+              <button class="btn-sm btn-ghost" (click)="selectAllMenus()">Tout sélectionner</button>
+              <button class="btn-sm btn-ghost" (click)="deselectAllMenus()">Tout désélectionner</button>
+            </div>
+          </div>
+
+          <div class="menus-grid">
+            @for (menu of allMenus; track menu.idmenu) {
+              <label class="menu-checkbox" [class.selected]="isMenuSelected(menu.idmenu)">
+                <input
+                  type="checkbox"
+                  [checked]="isMenuSelected(menu.idmenu)"
+                  (change)="toggleMenu(menu.idmenu)"
+                />
+                <span class="menu-check-icon">
+                  @if (isMenuSelected(menu.idmenu)) {
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                  }
+                </span>
+                <div class="menu-check-info">
+                  <span class="menu-check-title">{{ menu.titre }}</span>
+                  <span class="menu-check-path">{{ menu.memRouterlink }}</span>
+                </div>
+              </label>
+            } @empty {
+              <p class="text-muted" style="grid-column: 1 / -1; text-align: center; padding: 20px;">
+                Aucun menu disponible. Veuillez d'abord insérer des menus en base de données.
+              </p>
+            }
+          </div>
         </div>
       </div>
 

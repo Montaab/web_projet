@@ -451,6 +451,8 @@ tbody tr:hover {
 .modal-box {
   width: 100%;
   max-width: 560px;
+  max-height: 90vh;
+  overflow-y: auto;
   padding: 30px;
   background: linear-gradient(180deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.02)), var(--bg-card-strong);
   border: 1px solid var(--border-strong);

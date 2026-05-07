@@ -261,6 +261,16 @@ ALTER TABLE ONLY public.utilisateur ALTER COLUMN iduser SET DEFAULT nextval('pub
 --
 
 COPY public.lstmenu (idrole, idmenu) FROM stdin;
+1	1
+1	2
+1	3
+1	4
+1	5
+1	6
+1	7
+1	8
+1	9
+1	10
 \.
 
 
@@ -269,6 +279,16 @@ COPY public.lstmenu (idrole, idmenu) FROM stdin;
 --
 
 COPY public.menu (idmenu, titre, description, mem_routerlink, mem_href, mem_icon, mem_target, hassubmenu, parentid) FROM stdin;
+1	Dashboard	Tableau de bord	/dashboard	\N	dashboard	\N	f	\N
+2	Articles	Gestion des articles	/articles	\N	articles	\N	f	\N
+3	Catégories	Gestion des catégories	/categories	\N	categories	\N	f	\N
+4	Clients	Gestion des clients	/clients	\N	clients	\N	f	\N
+5	Fournisseurs	Gestion des fournisseurs	/fournisseurs	\N	fournisseurs	\N	f	\N
+6	Commandes	Gestion des commandes	/commandes	\N	commandes	\N	f	\N
+7	Factures	Gestion des factures	/factures	\N	factures	\N	f	\N
+8	Rôles	Gestion des rôles	/roles	\N	roles	\N	f	\N
+9	Utilisateurs	Gestion des utilisateurs	/utilisateurs	\N	utilisateurs	\N	f	\N
+10	Chatbot	Assistant IA	/chatbot	\N	chatbot	\N	f	\N
 \.
 
 
@@ -312,7 +332,7 @@ COPY public.utilisateur (iduser, nom, username, motpass, email, telephone, idrol
 -- Name: menu_idmenu_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.menu_idmenu_seq', 1, false);
+SELECT pg_catalog.setval('public.menu_idmenu_seq', 10, true);
 
 
 --

@@ -47,7 +47,7 @@ namespace User.API.Controllers
         // =========================
         // GET ALL
         // =========================
-        [Authorize]
+        [Authorize(Roles = "Administrateur")]
         [HttpGet]
         public async Task<ActionResult<IEnumerable<UtilisateurDto>>> GetAll()
         {
@@ -58,7 +58,7 @@ namespace User.API.Controllers
         // =========================
         // GET BY ID
         // =========================
-        [Authorize]
+        [Authorize(Roles = "Administrateur")]
         [HttpGet("{id}")]
         public async Task<ActionResult<UtilisateurDto>> GetById(int id)
         {
@@ -73,6 +73,7 @@ namespace User.API.Controllers
         // =========================
         // ADD
         // =========================
+        [Authorize(Roles = "Administrateur")]
         [HttpPost]
         public async Task<ActionResult<UtilisateurDto>> Add([FromBody] UtilisateurDto dto)
         {
@@ -95,7 +96,7 @@ namespace User.API.Controllers
         // =========================
         // UPDATE
         // =========================
-        [Authorize]
+        [Authorize(Roles = "Administrateur")]
         [HttpPut("{id}")]
         public async Task<IActionResult> Update(int id, [FromBody] UtilisateurDto dto)
         {
@@ -117,7 +118,7 @@ namespace User.API.Controllers
         // =========================
         // DELETE
         // =========================
-        [Authorize]
+        [Authorize(Roles = "Administrateur")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {

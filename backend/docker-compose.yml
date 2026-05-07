@@ -1,4 +1,4 @@
-version: '3.9'
+version: "3.9"
 
 services:
   postgres:
@@ -13,8 +13,8 @@ services:
       - "5432:5432"
     networks:
       - backend
-    volumes:    
-      - ./init-db:/docker-entrypoint-initdb.d 
+    volumes:
+      - ./init-db:/docker-entrypoint-initdb.d
 
   authapi:
     container_name: authapi
@@ -76,7 +76,6 @@ services:
     networks:
       - backend
 
-
   aiservice:
     build:
       context: .
@@ -91,9 +90,8 @@ services:
     networks:
       - backend
 
-
   apigateway:
-    build: 
+    build:
       context: .
       dockerfile: ./Gateway/Dockerfile
     container_name: apigateway
@@ -102,14 +100,14 @@ services:
       ASPNETCORE_ENVIRONMENT: Development
       ReverseProxy__Clusters__authCluster__Destinations__d1__Address: http://authapi:8080/
       ReverseProxy__Clusters__usersCluster__Destinations__d1__Address: http://userapi:8080/
-      ReverseProxy__Clusters__erpCluster__Destinations__d1__Address: http://erpapi:8080/ 
+      ReverseProxy__Clusters__erpCluster__Destinations__d1__Address: http://erpapi:8080/
       ReverseProxy__Clusters__aiCluster__Destinations__d1__Address: http://aiservice:8080/
     ports:
-      - "5000:8080"
+      - "5100:8080"
     depends_on:
       - authapi
       - userapi
-      - erpapi 
+      - erpapi
       - aiservice
     networks:
       - backend
