@@ -11,7 +11,7 @@ namespace ERP.Controllers
     /// </summary>
     [ApiController]
     [Route("ERP/[controller]")]
-    [Authorize(Roles = "Administrateur")]
+    [Authorize]
 
     public class LPanierController : ControllerBase
     {

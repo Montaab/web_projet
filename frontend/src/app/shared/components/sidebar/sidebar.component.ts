@@ -50,21 +50,13 @@ export class SidebarComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    // Extraire le nom du rôle depuis le JWT
     const token = this.auth.getToken();
-    const user = this.auth.getCurrentUser();
-
     if (token) {
       try {
         const payload = JSON.parse(atob(token.split('.')[1]));
-        // Keep payload for role name from JWT
-        this.roleName = payload.role || 'Utilisateur';
-      } catch (e) {
-        console.error('Erreur parsing token', e);
-      }
-    }
-
-    if (user) {
-      this.currentUser = user;
+        this.roleName = payload.role || '';
+      } catch { }
     }
 
     this.loadMenus();

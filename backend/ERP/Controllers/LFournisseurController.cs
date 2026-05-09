@@ -11,7 +11,7 @@ namespace ERP.Controllers
     /// </summary>
     [ApiController]
     [Route("ERP/[controller]")]
-    [Authorize(Roles = "Administrateur,Gestionnaire")]
+    [Authorize]
 
     public class LFournisseurController : ControllerBase
     {

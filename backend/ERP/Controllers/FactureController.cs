@@ -7,7 +7,7 @@ namespace ERP.Controllers
 {
     [ApiController]
     [Route("ERP/[controller]")]
-    [Authorize(Roles = "Administrateur,Comptable")]
+    [Authorize]
 
     public class FactureController : ControllerBase
     {
